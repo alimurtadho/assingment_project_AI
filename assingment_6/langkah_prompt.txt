@@ -1,0 +1,21 @@
+Membuka tutorial debugging MCP: Saya akan membuka halaman https://modelcontextprotocol.io/docs/tools/debugging agar Anda bisa mengikuti panduan debugging MCP.
+
+Menyiapkan MCP Server: Apakah Anda sudah memiliki MCP Server di workspace ini, atau ingin menggunakan template MCP Weather Server? Jika belum ada, saya bisa membantu membuat template MCP Weather Server.
+
+Simulasi error: Saya akan membantu Anda mensimulasikan error, misalnya dengan mengubah konfigurasi path atau environment variable yang tidak lengkap.
+
+Menggunakan alat debugging:
+
+MCP Inspector: Saya akan tunjukkan cara menguji fungsi server & tool.
+Claude Desktop Developer Tools: Saya akan jelaskan cara mengaktifkan dan menggunakannya.
+Aktifkan log & DevTools: Saya akan bantu mengaktifkan logging dan DevTools.
+Lacak pesan error, koneksi, dan payload: Saya akan tunjukkan cara melacaknya.
+Server Logging & send_log_message(): Saya akan bantu menambahkan fungsi logging di server.
+Langkah pertama, saya akan membuka tutorial debugging MCP untuk Anda.
+
+Opened Simple Browser at https://modelcontextprotocol.io/docs/tools/debugging
+
+Tutorial "A comprehensive guide to debugging Model Context Protocol (MCP) integrations" sudah dibuka di browser sederhana di dalam VS Code. Anda bisa langsung membacanya untuk referensi debugging MCP.
+
+Langkah selanjutnya, apakah Anda sudah memiliki MCP Server di workspace ini, atau ingin saya bantu membuat template MCP Weather Server terlebih dahulu? Jika sudah ada, sebutkan foldernya agar saya bisa membantu melakukan simulasi error dan menyiapkan alat debugging sesuai instruksi Anda.
+
