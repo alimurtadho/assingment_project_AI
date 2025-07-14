@@ -5,3 +5,13 @@ __pycache__/
 *.pyd
 .Python
 db.sqlite3
+
+# To-Do List API specific
+*.db
+.env
+test.db
+.pytest_cache/
+htmlcov/
+.coverage
+logs/
+*.log

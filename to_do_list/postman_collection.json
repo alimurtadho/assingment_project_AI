@@ -1,0 +1,552 @@
+{
+  "info": {
+    "name": "To-Do List API",
+    "description": "Complete API collection for To-Do List application with Bearer Token Authentication",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "list_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "task_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('user_id', response.id);",
+                  "    pm.test('User registered successfully', function () {",
+                  "        pm.expect(response).to.have.property('id');",
+                  "        pm.expect(response).to.have.property('username');",
+                  "        pm.expect(response).to.have.property('email');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john_doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"securepassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register a new user account"
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('access_token', response.access_token);",
+                  "    pm.test('Login successful', function () {",
+                  "        pm.expect(response).to.have.property('access_token');",
+                  "        pm.expect(response.token_type).to.eql('bearer');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "john_doe",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "securepassword123",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login and get access token"
+          }
+        }
+      ],
+      "description": "Authentication endpoints for user registration and login"
+    },
+    {
+      "name": "Lists",
+      "item": [
+        {
+          "name": "Get All Lists",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lists?skip=0&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["lists"],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all lists for the authenticated user"
+          }
+        },
+        {
+          "name": "Create List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('list_id', response.id);",
+                  "    pm.test('List created successfully', function () {",
+                  "        pm.expect(response).to.have.property('id');",
+                  "        pm.expect(response).to.have.property('title');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Work Tasks\",\n  \"description\": \"Tasks related to work projects and daily activities\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/lists",
+              "host": ["{{base_url}}"],
+              "path": ["lists"]
+            },
+            "description": "Create a new to-do list"
+          }
+        },
+        {
+          "name": "Get List by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lists/{{list_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["lists", "{{list_id}}"]
+            },
+            "description": "Get a specific list with all its tasks"
+          }
+        },
+        {
+          "name": "Update List",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Work Tasks\",\n  \"description\": \"Updated description for work-related tasks\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/lists/{{list_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["lists", "{{list_id}}"]
+            },
+            "description": "Update an existing list"
+          }
+        },
+        {
+          "name": "Delete List",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lists/{{list_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["lists", "{{list_id}}"]
+            },
+            "description": "Delete a list and all its tasks"
+          }
+        }
+      ],
+      "description": "CRUD operations for to-do lists"
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Get Tasks in List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/lists/{{list_id}}/tasks?skip=0&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["lists", "{{list_id}}", "tasks"],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all tasks in a specific list"
+          }
+        },
+        {
+          "name": "Create Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('task_id', response.id);",
+                  "    pm.test('Task created successfully', function () {",
+                  "        pm.expect(response).to.have.property('id');",
+                  "        pm.expect(response).to.have.property('title');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Complete project proposal\",\n  \"description\": \"Finish the Q4 project proposal document with budget analysis\",\n  \"priority\": \"high\",\n  \"due_date\": \"2025-07-20T17:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/lists/{{list_id}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["lists", "{{list_id}}", "tasks"]
+            },
+            "description": "Create a new task in a specific list"
+          }
+        },
+        {
+          "name": "Get Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "{{task_id}}"]
+            },
+            "description": "Get details of a specific task"
+          }
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Complete and review project proposal\",\n  \"description\": \"Finish the Q4 project proposal document with budget analysis and get peer review\",\n  \"completed\": true,\n  \"priority\": \"high\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "{{task_id}}"]
+            },
+            "description": "Update an existing task"
+          }
+        },
+        {
+          "name": "Mark Task as Completed",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completed\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "{{task_id}}"]
+            },
+            "description": "Mark a task as completed"
+          }
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "{{task_id}}"]
+            },
+            "description": "Delete a specific task"
+          }
+        }
+      ],
+      "description": "CRUD operations for tasks within lists"
+    },
+    {
+      "name": "Example Workflows",
+      "item": [
+        {
+          "name": "Create Personal List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('personal_list_id', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Personal Tasks\",\n  \"description\": \"Personal to-do items and errands\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/lists",
+              "host": ["{{base_url}}"],
+              "path": ["lists"]
+            }
+          }
+        },
+        {
+          "name": "Add Shopping Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Buy groceries\",\n  \"description\": \"Milk, bread, eggs, fruits, and vegetables\",\n  \"priority\": \"medium\",\n  \"due_date\": \"2025-07-15T18:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/lists/{{list_id}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["lists", "{{list_id}}", "tasks"]
+            }
+          }
+        },
+        {
+          "name": "Add Exercise Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Go for a run\",\n  \"description\": \"30-minute morning run in the park\",\n  \"priority\": \"low\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/lists/{{list_id}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["lists", "{{list_id}}", "tasks"]
+            }
+          }
+        }
+      ],
+      "description": "Example workflow demonstrating typical API usage patterns"
+    }
+  ]
+}
