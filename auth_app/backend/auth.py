@@ -104,3 +104,46 @@ def create_user(db: Session, user: schemas.UserCreate) -> User:
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+def change_user_password(db: Session, user: User, change_password: schemas.ChangePassword) -> bool:
+    """Change user password."""
+    # Verify current password
+    if not verify_password(change_password.current_password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect"
+        )
+    
+    # Hash new password
+    new_hashed_password = get_password_hash(change_password.new_password)
+    
+    # Update user password
+    user.hashed_password = new_hashed_password
+    user.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(user)
+    return True
+
+
+def update_user_profile(db: Session, user: User, profile_update: schemas.UpdateProfile) -> User:
+    """Update user profile."""
+    update_data = profile_update.model_dump(exclude_unset=True)
+    
+    # Check if email is being changed and if it already exists
+    if 'email' in update_data and update_data['email'] != user.email:
+        existing_user = get_user_by_email(db, update_data['email'])
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+    
+    # Update user fields
+    for field, value in update_data.items():
+        setattr(user, field, value)
+    
+    user.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(user)
+    return user
