@@ -1,9 +1,20 @@
 import pytest
 import os
 from fastapi.testclient import TestClient
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from main import app
+from database import get_db, Base
+from sqlalchemy import create_engine
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database import Base, get_db
+
+from main import app
+from database import get_db, Base
+
+# Test database configuration
+TEST_DATABASE_URL = "sqlite:///./test_auth.db"
 from main import app
 
 # Test database configuration
@@ -46,6 +57,14 @@ def test_client(test_db):
     
     app.dependency_overrides[get_db] = override_get_db
     client = TestClient(app)
+    
+    # Ensure fresh database for each test
+    with test_db() as db:
+        # Clear all data but keep tables
+        for table in reversed(Base.metadata.sorted_tables):
+            db.execute(table.delete())
+        db.commit()
+    
     yield client
     app.dependency_overrides.clear()
 

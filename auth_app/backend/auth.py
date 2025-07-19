@@ -7,6 +7,7 @@ from fastapi import HTTPException, status
 from database import User
 from config import settings
 import schemas
+import uuid
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -29,7 +30,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     else:
         expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes)
     
-    to_encode.update({"exp": expire, "type": "access"})
+    to_encode.update({"exp": expire, "type": "access", "iat": datetime.utcnow(), "jti": str(uuid.uuid4())})
     encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
     return encoded_jwt
 
@@ -42,7 +43,7 @@ def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None) 
     else:
         expire = datetime.utcnow() + timedelta(days=settings.refresh_token_expire_days)
     
-    to_encode.update({"exp": expire, "type": "refresh"})
+    to_encode.update({"exp": expire, "type": "refresh", "iat": datetime.utcnow(), "jti": str(uuid.uuid4())})
     encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
     return encoded_jwt
 

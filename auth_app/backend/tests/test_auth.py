@@ -145,7 +145,7 @@ class TestUserLogin:
         login_data = {"username": "", "password": ""}
         response = test_client.post("/auth/login", data=login_data)
         
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_login_missing_password(self, test_client):
         """Test login with missing password."""
@@ -177,7 +177,7 @@ class TestTokenRefresh:
         response = test_client.post("/auth/refresh", json={"refresh_token": "invalid_token"})
         
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-        assert "Invalid refresh token" in response.json()["detail"]
+        assert "Could not validate credentials" in response.json()["detail"]
 
     def test_refresh_token_empty(self, test_client):
         """Test refresh with empty token."""

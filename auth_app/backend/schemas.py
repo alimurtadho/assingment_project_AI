@@ -6,6 +6,8 @@ import re
 
 class UserBase(BaseModel):
     email: EmailStr
+    name: Optional[str] = None
+    bio: Optional[str] = None
 
 
 class UserCreate(UserBase):
