@@ -1,11 +1,11 @@
 name: Node.js CI Pipeline
 
-# Workflow ini akan dijalankan setiap kali ada push ke branch 'main'
+# Workflow ini akan dijalankan setiap kali ada push ke branch 'codeguardianAI'
 on:
   push:
-    branches: [ main ]
+    branches: [ codeguardianAI ]
   pull_request:
-    branches: [ main ]
+    branches: [ codeguardianAI ]
 
 jobs:
   # Job pertama: Lint

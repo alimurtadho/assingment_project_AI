@@ -1,9 +1,11 @@
 name: Node.js Lint and Test
 
-# Workflow akan dijalankan setiap kali ada push ke branch 'main'
+# Workflow akan dijalankan setiap kali ada push ke branch 'codeguardianAI'
 on:
   push:
-    branches: [ main ]
+    branches: [ codeguardianAI ]
+  pull_request:
+    branches: [ codeguardianAI ]
 
 jobs:
   # Job 1: Lint - Memeriksa kualitas kode

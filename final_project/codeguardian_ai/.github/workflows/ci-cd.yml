@@ -2,9 +2,9 @@ name: CodeGuardian Node.js CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ codeguardianAI ]
   pull_request:
-    branches: [ main ]
+    branches: [ codeguardianAI ]
 
 jobs:
   lint:
@@ -92,7 +92,7 @@ jobs:
   security-scan:
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/codeguardianAI'
     
     steps:
       - name: Checkout code
@@ -109,7 +109,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [test, security-scan]
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/codeguardianAI'
     
     steps:
       - name: Checkout code
