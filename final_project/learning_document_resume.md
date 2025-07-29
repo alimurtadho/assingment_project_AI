@@ -60,6 +60,7 @@ This document summarizes the comprehensive learning journey through 14 sessions 
 - MCP (Model Context Protocol) implementation
 - Weather API service development
 - Error handling and logging
+-project path /Users/newuser/ali/project/binar/bootcamp_ai/assingment/assingment_6
 
 **Current Challenge:** 
 - Implementing robust weather service with proper error handling
@@ -71,12 +72,15 @@ This document summarizes the comprehensive learning journey through 14 sessions 
 - Automated test case generation
 - Coverage analysis and optimization
 - AI-driven edge case identification
+-project path /Users/newuser/ali/project/binar/bootcamp_ai/assingment/auth_app
 
 ### Session 8: Performance Testing
 **Upcoming Skills:**
 - Load testing with AI optimization
 - Performance bottleneck identification
 - Automated performance regression testing
+-project path /Users/newuser/ali/project/binar/bootcamp_ai/assingment/auth_app
+
 
 ## Module 4: Security & Compliance (Sessions 9-11)
 ### Session 9: Security Scanning
@@ -84,12 +88,14 @@ This document summarizes the comprehensive learning journey through 14 sessions 
 - Vulnerability detection automation
 - SAST/DAST tool integration
 - Security policy enforcement
+-project path /Users/newuser/ali/project/binar/bootcamp_ai/assingment/auth_app
 
 ### Session 10: Test Coverage Enhancement
 **Quality Assurance:**
 - CI/CD pipeline testing integration
 - Coverage gap analysis
 - Automated test maintenance
+project path /Users/newuser/ali/project/binar/bootcamp_ai/assingment/auth_app
 
 ### Session 11: Performance Optimization
 **Optimization Techniques:**

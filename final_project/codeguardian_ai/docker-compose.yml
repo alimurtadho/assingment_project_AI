@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: codeguardian_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123qwe
+      POSTGRES_DB: codeguardian_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - codeguardian_network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: codeguardian_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - codeguardian_network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: codeguardian_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:123qwe@postgres:5432/codeguardian_db
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=development
+      - DEBUG=true
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/uploads
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - codeguardian_network
+    restart: unless-stopped
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Frontend (Optional - for later development)
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: codeguardian_frontend
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - REACT_APP_API_URL=http://localhost:8000
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - codeguardian_network
+
+volumes:
+  postgres_data:
+  redis_data:
+  uploads_data:
+
+networks:
+  codeguardian_network:
+    driver: bridge
