@@ -1,19 +1,10 @@
 const express = require('express');
-const multer = require('multer');
 const { validateFileUpload } = require('../middleware/validation');
 const testGenerator = require('../services/testGenerator');
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('../models/database');
+const { upload } = require('../utils/fileProcessor');
 
 const router = express.Router();
-const prisma = new PrismaClient();
-
-// Configure multer for file uploads
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-  }
-});
 
 // Generate tests endpoint
 router.post('/generate', upload.single('file'), validateFileUpload, async (req, res) => {

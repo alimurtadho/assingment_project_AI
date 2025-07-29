@@ -4,73 +4,13 @@
  */
 
 const OpenAI = require('openai');
+const { AI_PROMPTS } = require('../utils/aiPrompts');
 
 class AIReviewer {
   constructor() {
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY
     });
-    
-    this.prompts = {
-      codeReview: `You are an expert software engineer conducting a thorough code review. 
-Analyze the provided code and identify:
-
-1. Code quality issues (readability, maintainability, best practices)
-2. Performance concerns
-3. Security vulnerabilities
-4. Bug potential
-5. Design pattern violations
-6. Testing gaps
-
-For each issue found, provide:
-- Issue type and severity (HIGH/MEDIUM/LOW)
-- Line number (if applicable)
-- Clear description of the problem
-- Specific recommendation for improvement
-- Example of better code when helpful
-
-Respond in JSON format with this structure:
-{
-  "overallScore": 1-10,
-  "summary": "Brief overall assessment",
-  "issues": [
-    {
-      "type": "category",
-      "severity": "HIGH|MEDIUM|LOW",
-      "line": number,
-      "description": "description",
-      "recommendation": "specific fix",
-      "example": "optional code example"
-    }
-  ],
-  "strengths": ["positive aspects"],
-  "suggestions": ["general improvements"]
-}`,
-
-      refactoring: `You are an expert software engineer providing refactoring suggestions.
-Analyze the code and provide specific refactoring recommendations focusing on: {focusArea}
-
-Consider:
-- Code structure and organization
-- Performance optimizations
-- Readability improvements
-- Modern language features
-- Design patterns
-- Error handling
-
-Provide the response in JSON format:
-{
-  "refactoredCode": "complete refactored version",
-  "changes": [
-    {
-      "type": "change type",
-      "description": "what was changed",
-      "benefit": "why this improves the code"
-    }
-  ],
-  "reasoning": "overall refactoring rationale"
-}`
-    };
   }
 
   async reviewCode(fileContent, filename) {
@@ -80,7 +20,7 @@ Provide the response in JSON format:
       const fileExtension = filename.split('.').pop().toLowerCase();
       const language = this.detectLanguage(fileExtension);
       
-      const prompt = `${this.prompts.codeReview}
+      const prompt = `${AI_PROMPTS.CODE_REVIEW}
 
 Language: ${language}
 Filename: ${filename}
@@ -159,7 +99,7 @@ ${fileContent}
       const fileExtension = filename.split('.').pop().toLowerCase();
       const language = this.detectLanguage(fileExtension);
       
-      const prompt = this.prompts.refactoring.replace('{focusArea}', focusArea) + `
+      const prompt = AI_PROMPTS.REFACTORING.replace('{focusArea}', focusArea) + `
 
 Language: ${language}
 Filename: ${filename}

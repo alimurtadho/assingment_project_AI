@@ -1,19 +1,10 @@
 const express = require('express');
-const multer = require('multer');
 const { validateFileUpload } = require('../middleware/validation');
 const aiReviewer = require('../services/aiReviewer');
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('../models/database');
+const { upload } = require('../utils/fileProcessor');
 
 const router = express.Router();
-const prisma = new PrismaClient();
-
-// Configure multer for file uploads
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-  }
-});
 
 // AI code review endpoint
 router.post('/review', upload.single('file'), validateFileUpload, async (req, res) => {
