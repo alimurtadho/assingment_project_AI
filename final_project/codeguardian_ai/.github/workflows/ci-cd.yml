@@ -1,14 +1,37 @@
-name: CodeGuardian CI/CD Pipeline
+name: CodeGuardian Node.js CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run ESLint
+        run: npm run lint
+      
+      - name: Check code formatting with Prettier
+        run: npx prettier --check backend/ frontend/src/
+
   test:
     runs-on: ubuntu-latest
+    needs: lint  # Job test akan dijalankan setelah job lint berhasil
     
     services:
       postgres:
@@ -61,7 +84,7 @@ jobs:
           cd frontend
           npm run test -- --coverage --watchAll=false
       
-      - name: Build frontend
+      - name: Build application
         run: |
           cd frontend
           npm run build
@@ -69,6 +92,7 @@ jobs:
   security-scan:
     runs-on: ubuntu-latest
     needs: test
+    if: github.ref == 'refs/heads/main'
     
     steps:
       - name: Checkout code
@@ -82,37 +106,9 @@ jobs:
         with:
           args: --severity-threshold=high
 
-  code-quality:
-    runs-on: ubuntu-latest
-    needs: test
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm install
-      
-      - name: Run ESLint
-        run: npm run lint
-      
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   deploy:
     runs-on: ubuntu-latest
-    needs: [test, security-scan, code-quality]
+    needs: [test, security-scan]
     if: github.ref == 'refs/heads/main'
     
     steps:

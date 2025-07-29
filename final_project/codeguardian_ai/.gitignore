@@ -1,16 +1,59 @@
-# Byte-compiled / optimized / DLL files
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Dependency directories
+frontend/node_modules/
+backend/node_modules/
+
+# Package locks (optional - comment out if you want to commit them)
+# package-lock.json
+# yarn.lock
+
+# Build outputs
+dist/
+build/
+frontend/build/
+
+# React/TypeScript
+*.tsbuildinfo
+.eslintcache
+
+# Jest/Testing
+coverage/
+*.lcov
+.nyc_output
+junit.xml
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python (legacy - keeping for potential scripts)
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
-.Python
-build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -24,18 +67,10 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-
-# Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
-
-# Unit test / coverage reports
 htmlcov/
 .tox/
 .nox/
@@ -47,80 +82,40 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
-
-# Translations
 *.mo
 *.pot
-
-# Django stuff:
-*.log
 local_settings.py
 db.sqlite3
-
-# Flask stuff:
 instance/
 .webassets-cache
-
-# Scrapy stuff:
 .scrapy
-
-# Sphinx documentation
 docs/_build/
-
-# PyBuilder
 target/
-
-# Jupyter Notebook
 .ipynb_checkpoints
-
-# IPython
 profile_default/
 ipython_config.py
-
-# pyenv
 .python-version
-
-# celery beat schedule file
 celerybeat-schedule
-
-# SageMath parsed files
 *.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
 .spyderproject
 .spyproject
-
-# Rope project settings
 .ropeproject
-
-# mkdocs documentation
 /site
-
-# mypy
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
-# Pyre type checker
 .pyre/
 
-# IDEs
+# IDEs and Editors
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.vim/
+.emacs.d/
 
-# OS
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -128,6 +123,10 @@ dmypy.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+Desktop.ini
+
+# Windows
+$RECYCLE.BIN/
 
 # Project specific
 backend/uploads/
@@ -136,16 +135,106 @@ backend/*.db
 *.sql
 logs/
 temp/
+*.log
+
+# OpenAI/API Keys (extra security)
+.openai
+.api-keys
+
+# Prisma
+prisma/migrations/**/migration.sql
 
 # Docker
 .docker/
+*.dockerignore
 
-# Node.js (for future frontend)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Security files
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
 
-# Build outputs
-dist/
-build/
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Temporary files
+.tmp/
+.temp/
+*_temp
+*_tmp
+
+# Archive files
+*.tar
+*.tar.gz
+*.rar
+*.zip
+*.7z
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.history/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# macOS
+.AppleDouble
+.LSOverride
+Icon
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Kubernetes
+*.kubeconfig
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Local development
+.local/
+local.json
+local.yaml
+local.yml
+
+# SonarQube
+.sonar/
+.scannerwork/

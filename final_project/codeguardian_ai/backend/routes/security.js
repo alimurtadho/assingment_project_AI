@@ -1,30 +1,10 @@
 const express = require('express');
-const multer = require('multer');
 const { validateFileUpload } = require('../middleware/validation');
 const securityScanner = require('../services/securityScanner');
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('../models/database');
+const { upload } = require('../utils/fileProcessor');
 
 const router = express.Router();
-const prisma = new PrismaClient();
-
-// Configure multer for file uploads
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-  },
-  fileFilter: (req, file, cb) => {
-    // Allow common code file types
-    const allowedTypes = ['.js', '.ts', '.py', '.java', '.cpp', '.c', '.php', '.rb', '.go', '.rs'];
-    const fileExt = file.originalname.toLowerCase().substring(file.originalname.lastIndexOf('.'));
-    
-    if (allowedTypes.includes(fileExt)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Only code files are allowed.'));
-    }
-  }
-});
 
 // Security scan endpoint
 router.post('/scan', upload.single('file'), validateFileUpload, async (req, res) => {
