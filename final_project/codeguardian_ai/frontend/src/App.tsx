@@ -17,6 +17,7 @@ import FileUpload from './components/FileUpload';
 import SecurityReport from './components/SecurityReport';
 import CodeReview from './components/CodeReview';
 import TestResults from './components/TestResults';
+import { API_ENDPOINTS } from './config/api';
 import './App.css';
 
 const theme = createTheme({
