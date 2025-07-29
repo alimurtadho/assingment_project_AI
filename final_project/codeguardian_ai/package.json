@@ -1,0 +1,70 @@
+{
+  "name": "codeguardian-ai",
+  "version": "1.0.0",
+  "description": "AI-Enhanced DevSecOps Platform - Complete Full Stack Application",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev:backend": "nodemon backend/server.js",
+    "dev:frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "test:backend": "jest backend/tests/",
+    "test:frontend": "cd frontend && npm test",
+    "test": "npm run test:backend && npm run test:frontend",
+    "build": "cd frontend && npm run build",
+    "build:backend": "echo 'Backend ready for production'",
+    "build:all": "npm run build:backend && npm run build",
+    "lint": "eslint backend/ --ext .js",
+    "lint:fix": "eslint backend/ --ext .js --fix",
+    "install:frontend": "cd frontend && npm install",
+    "install:all": "npm install && npm run install:frontend",
+    "setup": "npm run install:all && cp .env.example .env",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "dotenv": "^16.3.1",
+    "joi": "^17.9.2",
+    "express-rate-limit": "^6.8.1",
+    "uuid": "^9.0.0",
+    "openai": "^4.0.0",
+    "fs-extra": "^11.1.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.1",
+    "supertest": "^6.3.3",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.0",
+    "concurrently": "^8.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alimurtadho/assingment_project_AI.git"
+  },
+  "keywords": [
+    "ai",
+    "devsecops",
+    "security",
+    "code-analysis",
+    "typescript",
+    "react",
+    "express",
+    "vulnerability-scanner",
+    "code-review",
+    "test-generation"
+  ],
+  "author": "Senior Software Engineer",
+  "license": "MIT"
+}
