@@ -6,7 +6,349 @@
 [![Docker](https://img.shields.io/badge/Docker-20.10+-blue.svg)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-CodeGuardian AI is a comprehensive AI-enhanced DevSecOps platform that integrates artificial intelligence throughout the Software Development Life Cycle (SDLC) to automatically detect security vulnerabilities, improve code quality, generate comprehensive tests, and provide actionable insights for development teams.
+# CodeGuardian AI - AI-Enhanced DevSecOps Platform
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/react-18.2.0-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/typescript-4.9.5-blue.svg)](https://www.typescriptlang.org/)
+
+CodeGuardian AI adalah platform DevSecOps yang ditingkatkan dengan AI untuk analisis keamanan kode, review otomatis, generasi test, dan analisis performa secara real-time.
+
+## 🚀 Fitur Utama
+
+### 🔒 Security Analysis
+- **Vulnerability Scanning**: Deteksi OWASP Top 10 vulnerabilities
+- **Secret Detection**: Identifikasi API keys, passwords, dan credentials
+- **Code Injection Analysis**: Deteksi SQL injection, XSS, dan serangan lainnya
+- **Real-time Security Score**: Penilaian keamanan berdasarkan tingkat risiko
+
+### 🤖 AI Code Review
+- **Quality Assessment**: Analisis kualitas kode dengan AI
+- **Best Practices**: Rekomendasi sesuai standar industri
+- **Maintainability Score**: Penilaian kemudahan maintenance
+- **Performance Optimization**: Saran optimasi performa
+
+### 🧪 Test Generation
+- **Automated Test Cases**: Generasi unit test dan integration test
+- **Edge Case Coverage**: Deteksi dan test untuk edge cases
+- **Test Coverage Analysis**: Laporan coverage yang komprehensif
+- **Performance Testing**: Benchmark dan load testing
+
+### ⚡ Performance Analysis
+- **Complexity Metrics**: Analisis cyclomatic complexity
+- **Memory Usage**: Monitoring penggunaan memori
+- **Execution Time**: Profiling waktu eksekusi
+- **Bottleneck Detection**: Identifikasi performance bottlenecks
+
+### 📊 Dashboard & Reporting
+- **Real-time Metrics**: Dashboard dengan data real-time
+- **Historical Trends**: Analisis trend performa dari waktu ke waktu
+- **Export Reports**: Export hasil analisis dalam berbagai format
+- **Team Collaboration**: Sharing dan kolaborasi tim
+
+## 🏗️ Arsitektur Teknologi
+
+### Backend (Node.js + Express)
+```
+backend/
+├── server.js              # Express server utama
+├── routes/                # API routes
+├── middleware/            # Custom middleware
+├── controllers/           # Business logic
+├── services/              # External services integration
+├── utils/                 # Utility functions
+└── tests/                 # Backend tests
+```
+
+### Frontend (React + TypeScript)
+```
+frontend/
+├── src/
+│   ├── components/        # React components
+│   │   ├── Dashboard.tsx      # Dashboard utama
+│   │   ├── FileUpload.tsx     # Upload dan scan files
+│   │   ├── SecurityReport.tsx # Laporan keamanan
+│   │   ├── CodeReview.tsx     # AI code review
+│   │   ├── TestResults.tsx    # Hasil test generation
+│   │   └── PerformanceAnalysis.tsx # Analisis performa
+│   ├── services/          # API integration
+│   ├── types/             # TypeScript definitions
+│   ├── utils/             # Frontend utilities
+│   └── App.tsx            # Main application
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js >= 18.0.0
+- npm >= 8.0.0
+- Git
+
+### Installation
+
+1. **Clone Repository**
+```bash
+git clone https://github.com/alimurtadho/assingment_project_AI.git
+cd assingment_project_AI/final_project/codeguardian_ai
+```
+
+2. **Install Dependencies**
+```bash
+# Install backend dependencies
+npm install
+
+# Install frontend dependencies
+cd frontend && npm install --legacy-peer-deps
+cd ..
+```
+
+3. **Environment Setup**
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit environment variables
+nano .env
+```
+
+4. **Start Development Server**
+```bash
+# Start both backend and frontend
+npm run dev
+
+# Or start separately:
+npm run dev:backend    # Backend only (port 5000)
+npm run dev:frontend   # Frontend only (port 3000)
+```
+
+5. **Access Application**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000
+- API Documentation: http://localhost:5000/api-docs
+
+## 🔧 Configuration
+
+### Environment Variables (.env)
+```env
+# Server Configuration
+PORT=5000
+NODE_ENV=development
+
+# AI Integration
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4
+
+# Security Settings
+JWT_SECRET=your_jwt_secret_here
+ENCRYPTION_KEY=your_encryption_key_here
+
+# File Upload Settings
+MAX_FILE_SIZE=10485760  # 10MB
+MAX_FILES=20
+UPLOAD_DIR=./uploads
+
+# Database (if using)
+DATABASE_URL=your_database_url_here
+
+# External Services
+GITHUB_TOKEN=your_github_token_here
+GITLAB_TOKEN=your_gitlab_token_here
+```
+
+## 📱 Usage Guide
+
+### 1. Upload Code Files
+- Drag & drop files ke upload area
+- Pilih jenis analisis: Security, AI Review, Test Generation, atau Performance
+- Konfigurasi opsi analisis sesuai kebutuhan
+- Klik "Start Analysis"
+
+### 2. View Security Report
+- Lihat vulnerability yang terdeteksi
+- Review security score dan rekomendasi
+- Export laporan dalam format JSON/PDF
+- Apply fix otomatis untuk vulnerability tertentu
+
+### 3. AI Code Review
+- Analisis kualitas kode dengan AI
+- Review suggestions dan best practices
+- Implement recommended improvements
+- Track progress over time
+
+### 4. Test Generation
+- Generate automated test cases
+- Review dan edit generated tests
+- Run tests dan lihat coverage
+- Export test suites
+
+### 5. Performance Analysis
+- Analisis bottlenecks dan optimizations
+- Review complexity metrics
+- Implement performance improvements
+- Monitor performance trends
+
+## 🧪 Testing
+
+### Run Tests
+```bash
+# Run all tests
+npm test
+
+# Run backend tests only
+npm run test:backend
+
+# Run frontend tests only
+npm run test:frontend
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+## 📊 API Documentation
+
+### Security Endpoints
+```
+POST /api/scan/security      # Security vulnerability scan
+GET  /api/scan/:id          # Get scan results
+DELETE /api/scan/:id        # Delete scan results
+```
+
+### AI Review Endpoints
+```
+POST /api/review/ai         # AI code review
+GET  /api/review/:id        # Get review results
+POST /api/review/feedback   # Submit feedback
+```
+
+### Test Generation Endpoints
+```
+POST /api/test/generate     # Generate test cases
+GET  /api/test/:id         # Get test results
+POST /api/test/run         # Run generated tests
+```
+
+### Performance Endpoints
+```
+POST /api/performance/analyze  # Performance analysis
+GET  /api/performance/:id     # Get analysis results
+POST /api/performance/benchmark # Run benchmarks
+```
+
+### Dashboard Endpoints
+```
+GET /api/dashboard/metrics    # Get dashboard metrics
+GET /api/dashboard/trends     # Get historical trends
+GET /api/dashboard/summary   # Get summary statistics
+```
+
+## 🔨 Development
+
+### Code Style
+```bash
+# Lint code
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Format code with Prettier
+npm run format
+```
+
+### Build for Production
+```bash
+# Build frontend
+npm run build
+
+# Build complete application
+npm run build:all
+```
+
+### Docker Deployment
+```bash
+# Build Docker images
+npm run docker:build
+
+# Start with Docker Compose
+npm run docker:up
+
+# Stop Docker containers
+npm run docker:down
+```
+
+## 🔒 Security Features
+
+### Input Validation
+- File type validation
+- Size limits enforcement
+- Content sanitization
+- Path traversal protection
+
+### Authentication & Authorization
+- JWT-based authentication
+- Role-based access control
+- API rate limiting
+- CORS configuration
+
+### Data Protection
+- File encryption at rest
+- Secure API communications
+- Input sanitization
+- XSS protection
+
+## 🚀 Deployment
+
+### Production Environment
+1. Set production environment variables
+2. Build frontend: `npm run build`
+3. Start production server: `npm start`
+4. Configure reverse proxy (nginx/Apache)
+5. Set up SSL certificates
+6. Configure monitoring and logging
+
+### Cloud Deployment Options
+- **Heroku**: Ready-to-deploy with Procfile
+- **AWS**: EC2, ECS, or Lambda deployment
+- **Google Cloud**: App Engine or Compute Engine
+- **Azure**: App Service or Container Instances
+
+## 🤝 Contributing
+
+1. Fork repository
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open Pull Request
+
+### Development Guidelines
+- Follow TypeScript best practices
+- Write comprehensive tests
+- Update documentation
+- Follow commit message conventions
+- Ensure code passes all linting rules
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- OpenAI untuk AI capabilities
+- Material-UI untuk UI components
+- Chart.js untuk data visualization
+- React community untuk ecosystem yang luar biasa
+- Security research community untuk vulnerability databases
+
+## 📞 Support
+
+- **Documentation**: [Wiki](https://github.com/alimurtadho/assingment_project_AI/wiki)
+- **Issues**: [GitHub Issues](https://github.com/alimurtadho/assingment_project_AI/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/alimurtadho/assingment_project_AI/discussions)
+
+---
+
+**CodeGuardian AI** - Securing code with artificial intelligence 🛡️🤖
 
 ## 🎯 **Project Status**
 

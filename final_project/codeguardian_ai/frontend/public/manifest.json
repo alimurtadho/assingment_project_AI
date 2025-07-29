@@ -1,0 +1,17 @@
+{
+  "short_name": "CodeGuardian AI",
+  "name": "CodeGuardian AI - DevSecOps Platform",
+  "description": "AI-Enhanced DevSecOps Platform for security analysis, code review, and test generation",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#1976d2",
+  "background_color": "#ffffff",
+  "categories": ["developer", "productivity", "security"]
+}
