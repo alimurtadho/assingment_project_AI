@@ -1,0 +1,50 @@
+{
+  "name": "codeguardian-ai",
+  "version": "1.0.0",
+  "description": "AI-Enhanced DevSecOps Platform",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev:backend": "nodemon backend/server.js",
+    "dev:frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "test:backend": "jest backend/tests/",
+    "test:frontend": "cd frontend && npm test",
+    "test": "npm run test:backend && npm run test:frontend",
+    "build": "cd frontend && npm run build",
+    "lint": "eslint backend/ --ext .js",
+    "lint:fix": "eslint backend/ --ext .js --fix",
+    "db:migrate": "npx prisma migrate dev",
+    "db:generate": "npx prisma generate",
+    "db:studio": "npx prisma studio",
+    "db:seed": "node prisma/seed.js",
+    "setup": "npm install && npm run db:generate && npm run db:migrate"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "@prisma/client": "^5.1.1",
+    "prisma": "^5.1.1",
+    "pg": "^8.11.1",
+    "openai": "^4.0.0",
+    "dotenv": "^16.3.1",
+    "joi": "^17.9.2",
+    "express-rate-limit": "^6.8.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.1",
+    "supertest": "^6.3.3",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.0",
+    "concurrently": "^8.2.0"
+  },
+  "keywords": ["devsecops", "ai", "security", "code-analysis"],
+  "author": "CodeGuardian Team",
+  "license": "MIT"
+}

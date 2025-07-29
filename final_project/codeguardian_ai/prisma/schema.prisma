@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ScanResult {
+  id                String   @id @default(cuid())
+  filename          String
+  fileContent       String
+  scanType          String   // 'security', 'ai-review', 'test-generation'
+  vulnerabilities   Json?    // Store security vulnerabilities
+  codeReview        Json?    // Store AI code review results
+  testCases         Json?    // Store generated test cases
+  riskScore         Int?     // 1-10 risk assessment
+  status            String   @default("completed") // 'pending', 'processing', 'completed', 'failed'
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  userId            String?
+  
+  user              User?    @relation(fields: [userId], references: [id])
+  
+  @@map("scan_results")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  name      String?
+  password  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  scans     ScanResult[]
+  
+  @@map("users")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String   // 'file_upload', 'security_scan', 'ai_review', 'test_generation'
+  details   Json?
+  ipAddress String?
+  userAgent String?
+  userId    String?
+  createdAt DateTime @default(now())
+  
+  @@map("audit_logs")
+}
