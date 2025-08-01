@@ -66,9 +66,12 @@ app.post('/api/security/scan', (req, res) => {
     if (code.includes('sk-') || code.includes('api_key') || code.includes('API_KEY')) {
         vulnerabilities.push({
             type: 'API Key Exposure',
+            category: 'Authentication',
             severity: 'HIGH',
             line: 1,
             description: 'Hardcoded API key detected',
+            code: 'API_KEY = "sk-xxxxxxxxxxxx"',
+            recommendation: 'Store API keys in environment variables or secure configuration files',
             cwe: 'CWE-798'
         });
     }
@@ -77,9 +80,12 @@ app.post('/api/security/scan', (req, res) => {
     if (code.includes('SELECT') && code.includes('+')) {
         vulnerabilities.push({
             type: 'SQL Injection',
+            category: 'Data Validation',
             severity: 'HIGH',
-            line: 1,
+            line: 2,
             description: 'Potential SQL injection vulnerability',
+            code: 'SELECT * FROM users WHERE id = " + userId',
+            recommendation: 'Use parameterized queries or prepared statements',
             cwe: 'CWE-89'
         });
     }
@@ -88,25 +94,258 @@ app.post('/api/security/scan', (req, res) => {
     if (code.includes('innerHTML') || code.includes('document.write')) {
         vulnerabilities.push({
             type: 'XSS Vulnerability',
+            category: 'Input Validation',
             severity: 'MEDIUM',
-            line: 1,
+            line: 3,
             description: 'Potential cross-site scripting vulnerability',
+            code: 'element.innerHTML = userInput',
+            recommendation: 'Sanitize user input before rendering to DOM',
             cwe: 'CWE-79'
         });
     }
 
+    const summary = {
+        totalIssues: vulnerabilities.length,
+        high: vulnerabilities.filter(v => v.severity === 'HIGH').length,
+        medium: vulnerabilities.filter(v => v.severity === 'MEDIUM').length,
+        low: vulnerabilities.filter(v => v.severity === 'LOW').length,
+        categories: [...new Set(vulnerabilities.map(v => v.category))].filter(Boolean)
+    };
+
+    const recommendations = [];
+    if (vulnerabilities.length > 0) {
+        recommendations.push({
+            priority: 'HIGH',
+            title: 'Implement Security Code Review',
+            description: 'Establish a mandatory security code review process for all code changes'
+        });
+        recommendations.push({
+            priority: 'MEDIUM',
+            title: 'Use Static Analysis Tools',
+            description: 'Integrate automated security scanning tools in your CI/CD pipeline'
+        });
+    }
+
     const riskScore = vulnerabilities.length > 0 ? 
-        Math.min(vulnerabilities.length * 30, 100) : 0;
+        Math.min(vulnerabilities.length * 2.5, 10) : 0;
 
     res.json({
         success: true,
+        filename: `code_${Date.now()}.${language}`,
         vulnerabilities,
         riskScore,
+        summary,
+        recommendations,
+        language: language || 'unknown',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// AI Code Review endpoint (simplified for testing)
+app.post('/api/ai-review/review', (req, res) => {
+    const { code, language } = req.body;
+    
+    if (!code) {
+        return res.status(400).json({
+            success: false,
+            error: { code: 400, message: 'Code content is required' }
+        });
+    }
+
+    // Simple code quality analysis for demo
+    const issues = [];
+    const suggestions = [];
+    
+    // Check for code quality issues
+    if (code.includes('var ')) {
+        issues.push({
+            type: 'Code Style',
+            severity: 'MEDIUM',
+            line: 1,
+            description: 'Use const or let instead of var',
+            suggestion: 'Replace var with const or let for better scoping',
+            category: 'Best Practices'
+        });
+    }
+
+    if (code.includes('== ') || code.includes('!= ')) {
+        issues.push({
+            type: 'Type Safety',
+            severity: 'LOW',
+            line: 1,
+            description: 'Use strict equality operators',
+            suggestion: 'Use === or !== instead of == or !=',
+            category: 'Code Quality'
+        });
+    }
+
+    if (code.includes('console.log')) {
+        issues.push({
+            type: 'Debug Code',
+            severity: 'LOW',
+            line: 1,
+            description: 'Console.log statements found',
+            suggestion: 'Remove debug console.log statements before production',
+            category: 'Clean Code'
+        });
+    }
+
+    if (code.length > 1000) {
+        issues.push({
+            type: 'Function Complexity',
+            severity: 'MEDIUM',
+            line: 1,
+            description: 'Code appears to be complex',
+            suggestion: 'Consider breaking down into smaller functions',
+            category: 'Maintainability'
+        });
+    }
+
+    // Generate suggestions
+    suggestions.push({
+        title: 'Add Error Handling',
+        description: 'Consider adding try-catch blocks for better error handling',
+        priority: 'HIGH',
+        category: 'Reliability'
+    });
+
+    suggestions.push({
+        title: 'Add Documentation',
+        description: 'Add JSDoc comments to improve code documentation',
+        priority: 'MEDIUM',
+        category: 'Documentation'
+    });
+
+    if (issues.length === 0) {
+        suggestions.push({
+            title: 'Code Looks Good',
+            description: 'No major issues detected. Consider adding unit tests.',
+            priority: 'LOW',
+            category: 'Testing'
+        });
+    }
+
+    const qualityScore = Math.max(100 - (issues.length * 15), 10);
+
+    res.json({
+        success: true,
+        filename: `code_${Date.now()}.${language}`,
+        qualityScore,
+        issues,
+        suggestions,
         summary: {
-            totalIssues: vulnerabilities.length,
-            high: vulnerabilities.filter(v => v.severity === 'HIGH').length,
-            medium: vulnerabilities.filter(v => v.severity === 'MEDIUM').length,
-            low: vulnerabilities.filter(v => v.severity === 'LOW').length
+            totalIssues: issues.length,
+            high: issues.filter(i => i.severity === 'HIGH').length,
+            medium: issues.filter(i => i.severity === 'MEDIUM').length,
+            low: issues.filter(i => i.severity === 'LOW').length,
+            categories: [...new Set(issues.map(i => i.category))].filter(Boolean)
+        },
+        language: language || 'unknown',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Test Generation endpoint (simplified for testing)
+app.post('/api/test-gen/generate', (req, res) => {
+    const { code, language } = req.body;
+    
+    if (!code) {
+        return res.status(400).json({
+            success: false,
+            error: { code: 400, message: 'Code content is required' }
+        });
+    }
+
+    // Simple test generation for demo
+    const testCases = [];
+    const testSuites = [];
+    
+    // Analyze code and generate test suggestions
+    const functions = code.match(/function\s+(\w+)/g) || [];
+    const classes = code.match(/class\s+(\w+)/g) || [];
+    const methods = code.match(/(\w+)\s*\(/g) || [];
+
+    // Generate unit tests
+    functions.forEach((func, index) => {
+        const funcName = func.replace('function ', '');
+        testCases.push({
+            type: 'Unit Test',
+            description: `Test ${funcName} with valid input`,
+            code: `describe('${funcName}', () => {
+    test('should return expected result with valid input', () => {
+        const result = ${funcName}(validInput);
+        expect(result).toBeDefined();
+    });
+});`,
+            framework: 'Jest',
+            category: 'Function Testing'
+        });
+    });
+
+    classes.forEach((cls, index) => {
+        const className = cls.replace('class ', '');
+        testCases.push({
+            type: 'Class Test',
+            description: `Test ${className} instantiation`,
+            code: `describe('${className}', () => {
+    test('should create instance correctly', () => {
+        const instance = new ${className}();
+        expect(instance).toBeInstanceOf(${className});
+    });
+});`,
+            framework: 'Jest',
+            category: 'Class Testing'
+        });
+    });
+
+    // Generate integration tests
+    if (code.includes('fetch') || code.includes('axios')) {
+        testCases.push({
+            type: 'Integration Test',
+            description: 'Test API integration',
+            code: `describe('API Integration', () => {
+    test('should handle API responses correctly', async () => {
+        const mockResponse = { data: 'test' };
+        // Mock API call
+        expect(mockResponse).toBeDefined();
+    });
+});`,
+            framework: 'Jest',
+            category: 'API Testing'
+        });
+    }
+
+    // Generate test recommendations
+    const recommendations = [
+        {
+            title: 'Add Edge Case Tests',
+            description: 'Consider testing with null, undefined, and empty values',
+            priority: 'HIGH'
+        },
+        {
+            title: 'Mock External Dependencies',
+            description: 'Use mocking for external API calls and database operations',
+            priority: 'MEDIUM'
+        },
+        {
+            title: 'Test Error Scenarios',
+            description: 'Add tests for error handling and exception cases',
+            priority: 'HIGH'
+        }
+    ];
+
+    const coverage = Math.min(testCases.length * 20, 100);
+
+    res.json({
+        success: true,
+        filename: `tests_${Date.now()}.${language}`,
+        testCases,
+        recommendations,
+        summary: {
+            totalTests: testCases.length,
+            unitTests: testCases.filter(t => t.type === 'Unit Test').length,
+            integrationTests: testCases.filter(t => t.type === 'Integration Test').length,
+            estimatedCoverage: coverage
         },
         language: language || 'unknown',
         timestamp: new Date().toISOString()
