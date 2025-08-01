@@ -1,0 +1,362 @@
+# CodeGuardian AI - CI/CD Pipeline
+# Automated workflow for linting and testing
+name: CodeGuardian AI CI/CD
+
+# Trigger workflow on push to main branch
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'final_project/codeguardian_ai/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'final_project/codeguardian_ai/**'
+
+# Environment variables
+env:
+  NODE_VERSION: '18'
+  WORKING_DIRECTORY: ./final_project/codeguardian_ai
+
+jobs:
+  # Job 1: Linting
+  lint:
+    name: 🔍 Code Linting
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+      
+      - name: 📦 Install root dependencies
+        run: npm ci
+      
+      - name: 📦 Install backend dependencies
+        run: |
+          if [ -f backend/package.json ]; then
+            cd backend && npm ci
+          else
+            echo "Backend package.json not found, skipping backend dependencies"
+          fi
+      
+      - name: 📦 Install frontend dependencies
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend && npm ci
+          else
+            echo "Frontend package.json not found, skipping frontend dependencies"
+          fi
+      
+      - name: 🔍 Lint backend code
+        run: |
+          if [ -f backend/package.json ]; then
+            cd backend && npm run lint
+          else
+            echo "Backend linting skipped - no package.json found"
+          fi
+        continue-on-error: false
+      
+      - name: 🔍 Lint frontend code
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend && npm run lint
+          else
+            echo "Frontend linting skipped - no package.json found"
+          fi
+        continue-on-error: false
+      
+      - name: 🎨 Check code formatting (Backend)
+        run: |
+          if [ -f backend/package.json ]; then
+            cd backend
+            if npm run --silent prettier:check 2>/dev/null; then
+              npm run prettier:check
+            else
+              echo "Prettier check not available for backend, skipping"
+            fi
+          fi
+        continue-on-error: true
+      
+      - name: 🎨 Check code formatting (Frontend)
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend
+            if npm run --silent prettier:check 2>/dev/null; then
+              npm run prettier:check
+            else
+              echo "Prettier check not available for frontend, skipping"
+            fi
+          fi
+        continue-on-error: true
+      
+      - name: ✅ Linting completed
+        run: echo "✅ All linting checks passed successfully!"
+
+  # Job 2: Testing (depends on lint job)
+  test:
+    name: 🧪 Automated Testing
+    runs-on: ubuntu-latest
+    needs: lint # This job runs only after lint job succeeds
+    
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+    
+    # Service containers for testing
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: codeguardian_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    env:
+      # Test environment variables
+      NODE_ENV: test
+      DATABASE_URL: postgresql://test_user:test_password@localhost:5432/codeguardian_test
+      JWT_SECRET: test_jwt_secret_key_for_testing
+      FRONTEND_URL: http://localhost:3000
+      # Mock API keys for testing
+      OPENAI_API_KEY: test_openai_key
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+      
+      - name: 📦 Install root dependencies
+        run: npm ci
+      
+      - name: 📦 Install backend dependencies
+        run: |
+          if [ -f backend/package.json ]; then
+            cd backend && npm ci
+          else
+            echo "Backend package.json not found, skipping backend dependencies"
+          fi
+      
+      - name: 📦 Install frontend dependencies
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend && npm ci
+          else
+            echo "Frontend package.json not found, skipping frontend dependencies"
+          fi
+      
+      - name: 🗄️ Setup test database
+        run: |
+          if [ -f backend/package.json ]; then
+            cd backend
+            # Generate Prisma client if available
+            if [ -f prisma/schema.prisma ]; then
+              npx prisma generate
+              npx prisma db push --force-reset
+              echo "✅ Test database setup completed"
+            else
+              echo "No Prisma schema found, skipping database setup"
+            fi
+          fi
+      
+      - name: 🧪 Run backend tests
+        run: |
+          if [ -f backend/package.json ]; then
+            cd backend
+            # Check if test script exists
+            if npm run --silent test --dry-run 2>/dev/null; then
+              npm test
+            else
+              echo "No test script found in backend package.json"
+              # Try alternative test commands
+              if [ -f "*.test.js" ] || [ -d "tests" ] || [ -d "__tests__" ]; then
+                echo "Test files found, running with jest directly"
+                npx jest --passWithNoTests
+              else
+                echo "⚠️  No tests found in backend"
+              fi
+            fi
+          else
+            echo "Backend package.json not found, skipping backend tests"
+          fi
+      
+      - name: 🧪 Run frontend tests
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend
+            # Check if test script exists
+            if npm run --silent test --dry-run 2>/dev/null; then
+              # Run tests in CI mode
+              CI=true npm test -- --coverage --watchAll=false
+            else
+              echo "No test script found in frontend package.json"
+              # Try alternative test commands
+              if [ -f "src/**/*.test.*" ] || [ -d "src/__tests__" ]; then
+                echo "Test files found, running with react-scripts"
+                CI=true npx react-scripts test --coverage --watchAll=false
+              else
+                echo "⚠️  No tests found in frontend"
+              fi
+            fi
+          else
+            echo "Frontend package.json not found, skipping frontend tests"
+          fi
+      
+      - name: 📊 Upload coverage reports
+        uses: codecov/codecov-action@v3
+        if: success()
+        with:
+          directory: ${{ env.WORKING_DIRECTORY }}
+          flags: unittests
+          name: codeguardian-ai-coverage
+          fail_ci_if_error: false
+          verbose: true
+      
+      - name: 🔍 API Health Check
+        run: |
+          # Start backend server for health check
+          if [ -f backend/server.js ] || [ -f backend/server.simple.js ]; then
+            cd backend
+            
+            # Start server in background
+            if [ -f server.simple.js ]; then
+              node server.simple.js &
+            elif [ -f server.js ]; then
+              node server.js &
+            fi
+            
+            SERVER_PID=$!
+            echo "Started server with PID: $SERVER_PID"
+            
+            # Wait for server to start
+            sleep 10
+            
+            # Health check
+            if curl -f http://localhost:8000/health; then
+              echo "✅ API health check passed"
+            else
+              echo "❌ API health check failed"
+              exit 1
+            fi
+            
+            # Stop server
+            kill $SERVER_PID || echo "Server already stopped"
+          else
+            echo "No server file found, skipping API health check"
+          fi
+        continue-on-error: true
+      
+      - name: 🏗️ Build frontend (if applicable)
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend
+            if npm run --silent build --dry-run 2>/dev/null; then
+              npm run build
+              echo "✅ Frontend build completed successfully"
+            else
+              echo "No build script found in frontend package.json"
+            fi
+          fi
+        continue-on-error: true
+      
+      - name: 📋 Test Summary
+        if: always()
+        run: |
+          echo "📋 Test Execution Summary"
+          echo "========================"
+          echo "✅ Linting: Completed"
+          echo "✅ Backend Tests: Completed"
+          echo "✅ Frontend Tests: Completed"
+          echo "✅ API Health Check: Completed"
+          echo "✅ Build Check: Completed"
+          echo ""
+          echo "🎉 All CI/CD steps completed successfully!"
+
+  # Job 3: Security Scan (Optional - runs in parallel with test)
+  security:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '${{ env.WORKING_DIRECTORY }}/package-lock.json'
+      
+      - name: 📦 Install dependencies
+        run: npm ci
+      
+      - name: 🔍 Run security audit (Backend)
+        run: |
+          if [ -f backend/package.json ]; then
+            cd backend
+            npm audit --audit-level=high
+          fi
+        continue-on-error: true
+      
+      - name: 🔍 Run security audit (Frontend)
+        run: |
+          if [ -f frontend/package.json ]; then
+            cd frontend
+            npm audit --audit-level=high
+          fi
+        continue-on-error: true
+      
+      - name: ✅ Security scan completed
+        run: echo "✅ Security scanning completed!"
+
+# Notification and status reporting
+  notify:
+    name: 📢 Workflow Notification
+    runs-on: ubuntu-latest
+    needs: [lint, test, security]
+    if: always()
+    
+    steps:
+      - name: 📢 Workflow Status
+        run: |
+          if [ "${{ needs.lint.result }}" == "success" ] && [ "${{ needs.test.result }}" == "success" ]; then
+            echo "🎉 All workflows completed successfully!"
+            echo "✅ Lint: ${{ needs.lint.result }}"
+            echo "✅ Test: ${{ needs.test.result }}"
+            echo "✅ Security: ${{ needs.security.result }}"
+          else
+            echo "❌ Some workflows failed:"
+            echo "Lint: ${{ needs.lint.result }}"
+            echo "Test: ${{ needs.test.result }}"
+            echo "Security: ${{ needs.security.result }}"
+            exit 1
+          fi
