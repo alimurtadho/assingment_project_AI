@@ -1,104 +1,104 @@
 {
-  "timestamp": "2025-08-01T06:24:05.237Z",
-  "totalDuration": 2538,
-  "averageTestDuration": 12.14354066985646,
+  "timestamp": "2025-08-01T15:39:20.759Z",
+  "totalDuration": 1792,
+  "averageTestDuration": 8.574162679425838,
   "slowestTests": [
     {
-      "title": "should handle circular references in error object",
-      "fullName": "ErrorHandler Utility edge cases and error conditions should handle circular references in error object",
-      "duration": 24
-    },
-    {
-      "title": "should handle missing file properties",
-      "fullName": "ValidationUtils Utility validateFile method should handle missing file properties",
-      "duration": 22
+      "title": "should find multiple patterns in same code",
+      "fullName": "SecurityScanner Service analyzePatterns method should find multiple patterns in same code",
+      "duration": 20
     },
     {
       "title": "should handle very large files",
       "fullName": "ValidationUtils Utility edge cases and error handling should handle very large files",
-      "duration": 14
+      "duration": 17
     },
     {
-      "title": "should handle safe code correctly",
-      "fullName": "SecurityScanner Service scanCode method should handle safe code correctly",
-      "duration": 14
-    },
-    {
-      "title": "should identify non-operational errors",
-      "fullName": "ErrorHandler Utility isOperationalError method should identify non-operational errors",
+      "title": "should detect eval usage",
+      "fullName": "ValidationUtils Utility detectMaliciousContent method should detect eval usage",
       "duration": 13
-    },
-    {
-      "title": "should reject oversized files",
-      "fullName": "ValidationUtils Utility validateFile method should reject oversized files",
-      "duration": 11
-    },
-    {
-      "title": "should normalize line endings",
-      "fullName": "ValidationUtils Utility sanitizeContent method should normalize line endings",
-      "duration": 10
-    },
-    {
-      "title": "should create paginated response with full pagination info",
-      "fullName": "ResponseFormatter Utility paginated method should create paginated response with full pagination info",
-      "duration": 9
     },
     {
       "title": "should validate JavaScript file successfully",
       "fullName": "ValidationUtils Utility validateFile method should validate JavaScript file successfully",
-      "duration": 8
+      "duration": 5
     },
     {
-      "title": "should handle empty content",
-      "fullName": "ValidationUtils Utility calculateFileHash method should handle empty content",
-      "duration": 8
+      "title": "should detect SQL injection patterns",
+      "fullName": "ValidationUtils Utility detectMaliciousContent method should detect SQL injection patterns",
+      "duration": 5
+    },
+    {
+      "title": "should handle circular references in error object",
+      "fullName": "ErrorHandler Utility edge cases and error conditions should handle circular references in error object",
+      "duration": 5
+    },
+    {
+      "title": "should normalize line endings",
+      "fullName": "ValidationUtils Utility sanitizeContent method should normalize line endings",
+      "duration": 3
+    },
+    {
+      "title": "should handle unknown errors safely",
+      "fullName": "ErrorHandler Utility handleError method should handle unknown errors safely",
+      "duration": 3
+    },
+    {
+      "title": "should detect hardcoded API keys",
+      "fullName": "Security Scanner Service scanCode should detect hardcoded API keys",
+      "duration": 3
+    },
+    {
+      "title": "should detect Function constructor usage",
+      "fullName": "ValidationUtils Utility detectMaliciousContent method should detect Function constructor usage",
+      "duration": 2
     }
   ],
   "testSuitePerformance": [
     {
       "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/integration.test.js",
-      "duration": 599,
-      "testsPerSecond": 0
-    },
-    {
-      "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/validationUtils.test.js",
-      "duration": 592,
-      "testsPerSecond": 45.60810810810811
-    },
-    {
-      "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/errorHandler.test.js",
-      "duration": 309,
+      "duration": 800,
       "testsPerSecond": 0
     },
     {
       "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/services/securityScanner.test.js",
-      "duration": 298,
+      "duration": 216,
+      "testsPerSecond": 0
+    },
+    {
+      "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/validationUtils.test.js",
+      "duration": 182,
+      "testsPerSecond": 148.35164835164835
+    },
+    {
+      "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/errorHandler.test.js",
+      "duration": 165,
       "testsPerSecond": 0
     },
     {
       "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/performance.test.js",
-      "duration": 236,
+      "duration": 146,
       "testsPerSecond": 0
     },
     {
       "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/responseFormatter.test.js",
-      "duration": 217,
-      "testsPerSecond": 9.216589861751153
-    },
-    {
-      "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/validationUtils.basic.test.js",
-      "duration": 120,
-      "testsPerSecond": 83.33333333333334
+      "duration": 117,
+      "testsPerSecond": 17.094017094017094
     },
     {
       "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/services.test.js",
-      "duration": 117,
-      "testsPerSecond": 51.28205128205128
+      "duration": 71,
+      "testsPerSecond": 84.50704225352113
+    },
+    {
+      "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/validationUtils.basic.test.js",
+      "duration": 59,
+      "testsPerSecond": 169.49152542372883
     },
     {
       "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/responseFormatter.basic.test.js",
-      "duration": 50,
-      "testsPerSecond": 160
+      "duration": 36,
+      "testsPerSecond": 222.22222222222223
     },
     {
       "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/logger.test.js",

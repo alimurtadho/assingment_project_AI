@@ -1,0 +1,51 @@
+{
+  "summary": {
+    "totalTests": 6,
+    "passedTests": 3,
+    "failedTests": 3,
+    "startTime": "2025-08-01T12:13:58.371Z"
+  },
+  "results": [
+    {
+      "testName": "Demo Server Health",
+      "passed": true,
+      "timestamp": "2025-08-01T12:13:58.404Z"
+    },
+    {
+      "testName": "Backend Server Health",
+      "passed": false,
+      "timestamp": "2025-08-01T12:13:58.412Z"
+    },
+    {
+      "testName": "Demo Server Analysis",
+      "passed": false,
+      "timestamp": "2025-08-01T12:13:58.417Z"
+    },
+    {
+      "testName": "Backend Security Scan",
+      "passed": false,
+      "timestamp": "2025-08-01T12:13:58.419Z"
+    },
+    {
+      "testName": "File Upload Simulation",
+      "passed": true,
+      "timestamp": "2025-08-01T12:13:58.421Z"
+    },
+    {
+      "testName": "Batch Analysis",
+      "passed": true,
+      "timestamp": "2025-08-01T12:13:58.424Z"
+    }
+  ],
+  "config": {
+    "BACKEND_URL": "http://localhost:8000",
+    "DEMO_SERVER_URL": "http://localhost:3001",
+    "TEST_FILES": [
+      "code-quality-issues.ts",
+      "functions-for-testing.ts",
+      "vulnerable-code.ts",
+      "comprehensive-vulnerabilities.ts"
+    ]
+  },
+  "generatedAt": "2025-08-01T12:13:58.427Z"
+}

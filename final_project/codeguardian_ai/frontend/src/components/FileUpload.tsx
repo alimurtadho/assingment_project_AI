@@ -9,7 +9,6 @@ import {
   Chip
 } from '@mui/material';
 import { CloudUpload } from '@mui/icons-material';
-import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
 interface FileUploadProps {
@@ -72,20 +71,61 @@ const FileUpload: React.FC<FileUploadProps> = ({ endpoint, onResults, acceptedTy
     }
   }, [endpoint, onResults]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: acceptedTypes ? {
-      'text/plain': acceptedTypes.split(',')
-    } : undefined,
-    maxFiles: 1,
-    maxSize: 5 * 1024 * 1024, // 5MB
-  });
+  const [isDragActive, setIsDragActive] = useState(false);
+
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragActive(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragActive(false);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragActive(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      onDrop(files);
+    }
+  }, [onDrop]);
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      onDrop(Array.from(files));
+    }
+  }, [onDrop]);
 
   return (
     <Box sx={{ mb: 3 }}>
+      <input
+        type="file"
+        accept={acceptedTypes}
+        onChange={handleFileSelect}
+        style={{ display: 'none' }}
+        id="file-upload-input"
+        multiple={false}
+      />
       <Paper
-        {...getRootProps()}
+        component="label"
+        htmlFor="file-upload-input"
         elevation={isDragActive ? 4 : 1}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
         sx={{
           p: 4,
           textAlign: 'center',
@@ -100,8 +140,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ endpoint, onResults, acceptedTy
           }
         }}
       >
-        <input {...getInputProps()} />
-        
         {loading ? (
           <Box>
             <CircularProgress sx={{ mb: 2 }} />

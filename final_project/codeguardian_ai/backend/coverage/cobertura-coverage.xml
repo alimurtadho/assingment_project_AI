@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="1092" lines-covered="207" line-rate="0.1895" branches-valid="540" branches-covered="103" branch-rate="0.1907" timestamp="1754029445083" complexity="0" version="0.1">
+<coverage lines-valid="1092" lines-covered="207" line-rate="0.1895" branches-valid="540" branches-covered="103" branch-rate="0.1907" timestamp="1754062760591" complexity="0" version="0.1">
   <sources>
     <source>/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend</source>
   </sources>

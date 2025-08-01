@@ -1,22 +1,21 @@
-FROM python:3.11-slim
+FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    curl \
+# Install system dependencies for native modules
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
     git \
-    && rm -rf /var/lib/apt/lists/*
+    curl
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy package files
+COPY package*.json ./
 
-# Install security scanning tools
-RUN pip install bandit safety
+# Install Node.js dependencies
+RUN npm ci --only=production
 
 # Copy application code
 COPY . .
@@ -28,4 +27,5 @@ RUN mkdir -p uploads
 EXPOSE 8000
 
 # Run the application
+CMD ["node", "server.simple.js"]
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
