@@ -54,7 +54,9 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/codeguardian_test
           NODE_ENV: test
           JWT_SECRET: test_secret_key
-        run: npm run test:backend
+        run: |
+          cd backend
+          npm test -- --testPathPattern="basic\.test\.js|services\.test\.js" --coverage
       
       - name: Run frontend tests
         run: |

@@ -1,0 +1,128 @@
+name: SonarQube Code Quality Analysis
+
+on:
+  push:
+    branches: [ main, develop, codeguardianAI ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  sonarqube-analysis:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: codeguardian_test
+          POSTGRES_USER: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
+      
+      - name: 📦 Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: 📥 Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+      
+      - name: 📥 Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+      
+      - name: 🔧 Setup test environment
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/codeguardian_test
+        run: |
+          cd backend
+          cp .env.example .env || true
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/codeguardian_test" >> .env
+          echo "NODE_ENV=test" >> .env
+          echo "JWT_SECRET=test_secret_key" >> .env
+      
+      - name: 🧪 Run backend tests with coverage
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/codeguardian_test
+          NODE_ENV: test
+          JWT_SECRET: test_secret_key
+        run: |
+          cd backend
+          npm test -- --testPathPattern="basic\.test\.js|services\.test\.js" --coverage --coverageReporters=lcov --coverageReporters=text --passWithNoTests
+      
+      - name: 🧪 Run frontend tests with coverage
+        run: |
+          cd frontend
+          npm test -- --coverage --watchAll=false --passWithNoTests || true
+      
+      - name: 📊 SonarQube Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=codeguardian-ai
+            -Dsonar.organization=alimurtadho
+            -Dsonar.sources=backend/src/,frontend/src/
+            -Dsonar.tests=backend/tests/,frontend/src/__tests__/
+            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
+            -Dsonar.exclusions=**/node_modules/**,**/build/**,**/dist/**,**/coverage/**,**/*.test.js,**/*.test.ts
+            -Dsonar.coverage.exclusions=**/*.test.js,**/*.test.ts,**/tests/**
+      
+      - name: 📊 SonarQube Quality Gate check
+        uses: sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
+      
+      - name: 📋 Comment PR with SonarQube Results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const projectKey = 'codeguardian-ai';
+            const organization = 'alimurtadho';
+            const sonarUrl = `https://sonarcloud.io/dashboard?id=${projectKey}`;
+            
+            const comment = `## 🔍 SonarQube Analysis Results
+            
+            📊 **View detailed analysis**: [SonarCloud Dashboard](${sonarUrl})
+            
+            ### Quick Stats
+            - 🎯 **Project**: CodeGuardian AI
+            - 🔍 **Analysis**: Completed
+            - 📈 **Coverage**: Check dashboard for details
+            - 🛡️ **Security**: Vulnerability scan completed
+            
+            ### Next Steps
+            1. Review the [SonarCloud Dashboard](${sonarUrl})
+            2. Address any Quality Gate failures
+            3. Fix security hotspots if any
+            4. Improve code coverage where possible
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

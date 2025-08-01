@@ -1,0 +1,74 @@
+{
+  "timestamp": "2025-08-01T03:09:58.881Z",
+  "totalDuration": 591,
+  "averageTestDuration": 24.625,
+  "slowestTests": [
+    {
+      "title": "should detect hardcoded API keys",
+      "fullName": "Security Scanner Service scanCode should detect hardcoded API keys",
+      "duration": 8
+    },
+    {
+      "title": "should validate correct OpenAI API key format",
+      "fullName": "ValidationUtils Utility - Basic Tests validateApiKey method should validate correct OpenAI API key format",
+      "duration": 4
+    },
+    {
+      "title": "should generate valid ISO timestamp",
+      "fullName": "ResponseFormatter Utility - Basic Tests timestamp handling should generate valid ISO timestamp",
+      "duration": 4
+    },
+    {
+      "title": "should reject non-string API keys",
+      "fullName": "ValidationUtils Utility - Basic Tests validateApiKey method should reject non-string API keys",
+      "duration": 3
+    },
+    {
+      "title": "should remove control characters",
+      "fullName": "ValidationUtils Utility - Basic Tests sanitizeFileContent method should remove control characters",
+      "duration": 3
+    },
+    {
+      "title": "should return no vulnerabilities for clean code",
+      "fullName": "Security Scanner Service scanCode should return no vulnerabilities for clean code",
+      "duration": 3
+    },
+    {
+      "title": "should create success response with data and default message",
+      "fullName": "ResponseFormatter Utility - Basic Tests success method should create success response with data and default message",
+      "duration": 3
+    },
+    {
+      "title": "should reject invalid API key format",
+      "fullName": "ValidationUtils Utility - Basic Tests validateApiKey method should reject invalid API key format",
+      "duration": 2
+    },
+    {
+      "title": "should limit content to 100KB",
+      "fullName": "ValidationUtils Utility - Basic Tests sanitizeFileContent method should limit content to 100KB",
+      "duration": 2
+    },
+    {
+      "title": "should handle empty content",
+      "fullName": "ValidationUtils Utility - Basic Tests sanitizeFileContent method should handle empty content",
+      "duration": 2
+    }
+  ],
+  "testSuitePerformance": [
+    {
+      "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/validationUtils.basic.test.js",
+      "duration": 364,
+      "testsPerSecond": 27.472527472527474
+    },
+    {
+      "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/services.test.js",
+      "duration": 181,
+      "testsPerSecond": 33.149171270718234
+    },
+    {
+      "testFilePath": "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/tests/unit/utils/responseFormatter.basic.test.js",
+      "duration": 46,
+      "testsPerSecond": 173.91304347826087
+    }
+  ]
+}

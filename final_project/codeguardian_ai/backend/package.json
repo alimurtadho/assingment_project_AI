@@ -1,0 +1,135 @@
+{
+  "name": "codeguardian-ai-backend",
+  "version": "2.0.0",
+  "description": "Enhanced CodeGuardian AI Backend with comprehensive refactoring",
+  "main": "server.refactored.js",
+  "scripts": {
+    "start": "node server.refactored.js",
+    "dev": "nodemon server.refactored.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest tests/integration.test.js",
+    "test:performance": "jest tests/performance.test.js",
+    "test:unit": "jest --testPathPattern=unit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "db:migrate": "npx prisma migrate dev",
+    "db:generate": "npx prisma generate",
+    "db:reset": "npx prisma migrate reset",
+    "db:seed": "node scripts/seed.js",
+    "docs:generate": "jsdoc -c jsdoc.conf.json",
+    "security:audit": "npm audit",
+    "security:fix": "npm audit fix",
+    "build": "echo 'No build step required for Node.js'",
+    "validate": "npm run lint && npm run test && npm run security:audit"
+  },
+  "keywords": [
+    "devsecops",
+    "security",
+    "code-analysis",
+    "ai",
+    "testing",
+    "vulnerability-detection"
+  ],
+  "author": "CodeGuardian AI Team",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.0.0",
+    "bcrypt": "^5.1.0",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.11.2",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.2.0",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.2",
+    "mime-types": "^2.1.35",
+    "morgan": "^1.10.1",
+    "multer": "^1.4.5-lts.1",
+    "openai": "^4.0.0",
+    "sharp": "^0.32.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "uuid": "^9.0.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^4.7.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@types/jest": "^29.5.3",
+    "babel-jest": "^30.0.5",
+    "eslint": "^8.46.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-jest": "^27.2.3",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "jest-html-reporter": "^3.10.2",
+    "jest-junit": "^16.0.0",
+    "jsdoc": "^4.0.2",
+    "lint-staged": "^13.2.3",
+    "nodemon": "^3.0.1",
+    "prisma": "^5.0.0",
+    "supertest": "^6.3.4"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "airbnb-base",
+      "plugin:jest/recommended"
+    ],
+    "env": {
+      "node": true,
+      "jest": true,
+      "es6": true
+    },
+    "rules": {
+      "no-console": "warn",
+      "indent": [
+        "error",
+        4
+      ],
+      "max-len": [
+        "error",
+        {
+          "code": 120
+        }
+      ],
+      "no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "prefer-const": "error",
+      "no-var": "error"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/codeguardian-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/codeguardian-ai/issues"
+  },
+  "homepage": "https://github.com/your-org/codeguardian-ai#readme"
+}

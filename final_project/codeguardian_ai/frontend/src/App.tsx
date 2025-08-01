@@ -113,7 +113,7 @@ function App() {
               SQL injection patterns, and other security issues.
             </Typography>
             <FileUpload 
-              endpoint="/api/security/scan"
+              endpoint={API_ENDPOINTS.SECURITY_SCAN}
               onResults={setScanResults}
               acceptedTypes=".js,.ts,.py,.java,.cpp,.c,.php,.rb,.go,.rs"
             />
@@ -129,7 +129,7 @@ function App() {
               performance concerns, and improvement opportunities.
             </Typography>
             <FileUpload 
-              endpoint="/api/ai-review/review"
+              endpoint={API_ENDPOINTS.AI_REVIEW}
               onResults={setReviewResults}
               acceptedTypes=".js,.ts,.py,.java,.cpp,.c,.php,.rb,.go,.rs"
             />
@@ -145,7 +145,7 @@ function App() {
               integration tests, and improve test coverage.
             </Typography>
             <FileUpload 
-              endpoint="/api/test-gen/generate"
+              endpoint={API_ENDPOINTS.TEST_GENERATION}
               onResults={setTestResults}
               acceptedTypes=".js,.ts,.py,.java,.cpp,.c,.php,.rb,.go,.rs"
             />

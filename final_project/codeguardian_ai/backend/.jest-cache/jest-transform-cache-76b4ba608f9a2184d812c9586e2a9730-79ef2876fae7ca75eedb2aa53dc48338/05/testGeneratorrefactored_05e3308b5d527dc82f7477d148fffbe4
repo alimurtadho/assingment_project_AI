@@ -1,0 +1,33 @@
+f03c3a5a585ac87783ef4513e7e562c3
+/* istanbul ignore next */
+function cov_f0x49w9iw() {
+  var path = "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/services/testGenerator.refactored.js";
+  var hash = "eb8bc6dcd15147e4a5b7387f76126dc962239a56";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/home/aldho/poc_aldho/assingment_project_AI/final_project/codeguardian_ai/backend/services/testGenerator.refactored.js",
+    statementMap: {},
+    fnMap: {},
+    branchMap: {},
+    s: {},
+    f: {},
+    b: {},
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "eb8bc6dcd15147e4a5b7387f76126dc962239a56"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_f0x49w9iw = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_f0x49w9iw();
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfZjB4NDl3OWl3IiwiYWN0dWFsQ292ZXJhZ2UiXSwic291cmNlcyI6WyJ0ZXN0R2VuZXJhdG9yLnJlZmFjdG9yZWQuanMiXSwic291cmNlc0NvbnRlbnQiOlsiIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztJQWVZO0lBQUFBLGFBQUEsWUFBQUEsQ0FBQTtNQUFBLE9BQUFDLGNBQUE7SUFBQTtFQUFBO0VBQUEsT0FBQUEsY0FBQTtBQUFBO0FBQUFELGFBQUEiLCJpZ25vcmVMaXN0IjpbXX0=

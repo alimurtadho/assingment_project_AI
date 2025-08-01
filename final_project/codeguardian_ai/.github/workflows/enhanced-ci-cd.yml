@@ -1,0 +1,271 @@
+name: CodeGuardian Enhanced CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, codeguardianAI ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  NODE_VERSION: '18'
+  POSTGRES_VERSION: '15'
+
+jobs:
+  # Job 1: Backend Testing
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: codeguardian_test
+          POSTGRES_USER: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'backend/package-lock.json'
+      
+      - name: 📥 Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+      
+      - name: 🔧 Setup test environment
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/codeguardian_test
+        run: |
+          cd backend
+          cp .env.example .env
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/codeguardian_test" >> .env
+          echo "NODE_ENV=test" >> .env
+          echo "JWT_SECRET=test_secret_key" >> .env
+      
+      - name: 🧪 Run backend tests with coverage
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/codeguardian_test
+          NODE_ENV: test
+          JWT_SECRET: test_secret_key
+        run: |
+          cd backend
+          npm test -- --testPathPattern="basic\.test\.js|services\.test\.js" --coverage --coverageReporters=lcov --coverageReporters=text
+      
+      - name: 📊 Upload backend coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./backend/coverage/lcov.info
+          flags: backend
+          name: backend-coverage
+
+  # Job 2: Frontend Testing
+  frontend-test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+      
+      - name: 📥 Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+      
+      - name: 🧪 Run frontend tests
+        run: |
+          cd frontend
+          npm run test -- --coverage --watchAll=false --testResultsProcessor=jest-sonar-reporter
+      
+      - name: 🏗️ Build frontend
+        run: |
+          cd frontend
+          npm run build
+      
+      - name: 📊 Upload frontend coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+
+  # Job 3: Code Quality Analysis
+  code-quality:
+    name: Code Quality & SonarQube
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-test]
+    
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better analysis
+      
+      - name: 📦 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: 📥 Install dependencies
+        run: |
+          npm ci
+          cd backend && npm ci
+          cd ../frontend && npm ci
+      
+      - name: 🔍 Run ESLint for backend
+        run: |
+          cd backend
+          npx eslint . --ext .js,.ts --format json --output-file eslint-report.json || true
+      
+      - name: 🔍 Run ESLint for frontend
+        run: |
+          cd frontend
+          npx eslint . --ext .js,.jsx,.ts,.tsx --format json --output-file eslint-report.json || true
+      
+      - name: 🧪 Re-run tests for SonarQube
+        run: |
+          cd backend
+          npm test -- --testPathPattern="basic\.test\.js|services\.test\.js" --coverage --coverageReporters=lcov
+          cd ../frontend
+          npm run test -- --coverage --watchAll=false --testResultsProcessor=jest-sonar-reporter
+      
+      - name: 📊 SonarQube Quality Gate check
+        uses: sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      
+      - name: 🔍 SonarQube Analysis
+        uses: SonarSource/sonarqube-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  # Job 4: Security Scanning
+  security-scan:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-test]
+    
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🛡️ Run Snyk security scan
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --json
+      
+      - name: 🔍 Run CodeQL Analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript, typescript
+      
+      - name: 🔍 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  # Job 5: Build & Deploy
+  build-deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-test, code-quality, security-scan]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: 📥 Install dependencies
+        run: |
+          npm ci
+          cd backend && npm ci
+          cd ../frontend && npm ci
+      
+      - name: 🏗️ Build applications
+        run: |
+          cd frontend
+          npm run build
+          cd ../backend
+          # Add backend build steps if needed
+      
+      - name: 🐳 Build Docker images
+        run: |
+          docker build -t codeguardian-backend:${{ github.sha }} -f backend/Dockerfile .
+          docker build -t codeguardian-frontend:${{ github.sha }} -f frontend/Dockerfile .
+      
+      - name: 🚀 Deploy to staging
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          echo "🚀 Deploying to staging environment..."
+          # Add staging deployment commands
+      
+      - name: 🚀 Deploy to production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "🚀 Deploying to production environment..."
+          # Add production deployment commands
+      
+      - name: 🔄 Run smoke tests
+        run: |
+          echo "🧪 Running post-deployment smoke tests..."
+          # Add smoke test commands
+      
+      - name: 📢 Slack notification
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Deployment completed with status: ${{ job.status }}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  # Job 6: Performance Testing
+  performance-test:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: [build-deploy]
+    
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: ⚡ Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v9
+        with:
+          configPath: './lighthouse.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true

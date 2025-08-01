@@ -1,0 +1,10 @@
+curl -X POST http://localhost:3001/api/security/scan \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@demo/vulnerable-code.ts" \
+  -w "\n\nStatus: %{http_code}\n"
+
+
+curl -X POST http://localhost:3001/api/ai-review/analyze \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@demo/code-quality-issues.ts" \
+  -w "\n\nStatus: %{http_code}\n"
