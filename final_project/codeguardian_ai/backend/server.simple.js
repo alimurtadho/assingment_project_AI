@@ -258,7 +258,6 @@ app.post('/api/test-gen/generate', (req, res) => {
 
     // Simple test generation for demo
     const testCases = [];
-    const testSuites = [];
     
     // Analyze code and generate test suggestions
     const functions = code.match(/function\s+(\w+)/g) || [];
@@ -269,85 +268,159 @@ app.post('/api/test-gen/generate', (req, res) => {
     functions.forEach((func, index) => {
         const funcName = func.replace('function ', '');
         testCases.push({
-            type: 'Unit Test',
+            function: funcName,
             description: `Test ${funcName} with valid input`,
-            code: `describe('${funcName}', () => {
-    test('should return expected result with valid input', () => {
-        const result = ${funcName}(validInput);
-        expect(result).toBeDefined();
-    });
-});`,
-            framework: 'Jest',
-            category: 'Function Testing'
+            type: 'unit',
+            scenario: `Should return expected result when ${funcName} is called with valid parameters`
+        });
+        
+        testCases.push({
+            function: funcName,
+            description: `Test ${funcName} with edge cases`,
+            type: 'edge-case',
+            scenario: `Should handle null, undefined, and boundary values for ${funcName}`
         });
     });
 
     classes.forEach((cls, index) => {
         const className = cls.replace('class ', '');
         testCases.push({
-            type: 'Class Test',
+            function: `${className} constructor`,
             description: `Test ${className} instantiation`,
-            code: `describe('${className}', () => {
-    test('should create instance correctly', () => {
-        const instance = new ${className}();
-        expect(instance).toBeInstanceOf(${className});
-    });
-});`,
-            framework: 'Jest',
-            category: 'Class Testing'
+            type: 'unit',
+            scenario: `Should create ${className} instance correctly with valid parameters`
+        });
+        
+        testCases.push({
+            function: `${className} methods`,
+            description: `Test ${className} method integration`,
+            type: 'integration',
+            scenario: `Should test interaction between ${className} methods and external dependencies`
         });
     });
 
-    // Generate integration tests
-    if (code.includes('fetch') || code.includes('axios')) {
+    // Generate integration tests if API calls detected
+    if (code.includes('fetch') || code.includes('axios') || code.includes('http')) {
         testCases.push({
-            type: 'Integration Test',
-            description: 'Test API integration',
-            code: `describe('API Integration', () => {
-    test('should handle API responses correctly', async () => {
-        const mockResponse = { data: 'test' };
-        // Mock API call
-        expect(mockResponse).toBeDefined();
-    });
-});`,
-            framework: 'Jest',
-            category: 'API Testing'
+            function: 'API integration',
+            description: 'Test API integration and responses',
+            type: 'integration',
+            scenario: 'Should handle API responses, errors, and network failures correctly'
         });
     }
 
-    // Generate test recommendations
+    // If no specific functions found, create generic tests
+    if (testCases.length === 0) {
+        testCases.push({
+            function: 'main functionality',
+            description: 'Test main code functionality',
+            type: 'unit',
+            scenario: 'Should execute main code logic correctly with valid inputs'
+        });
+        
+        testCases.push({
+            function: 'error handling',
+            description: 'Test error scenarios',
+            type: 'edge-case',
+            scenario: 'Should handle errors and invalid inputs gracefully'
+        });
+    }
+
+    // Generate comprehensive test file content
+    const testFileContent = `// Generated test file for ${language || 'JavaScript'} code
+const { describe, test, expect, beforeEach, afterEach } = require('@jest/globals');
+
+// Import the module under test
+// const moduleUnderTest = require('./your-module');
+
+describe('Generated Test Suite', () => {
+    beforeEach(() => {
+        // Setup before each test
+    });
+
+    afterEach(() => {
+        // Cleanup after each test
+    });
+
+${testCases.map(tc => `
+    describe('${tc.function}', () => {
+        test('${tc.description}', () => {
+            // ${tc.scenario}
+            
+            // Arrange
+            const testInput = 'test-data';
+            const expectedOutput = 'expected-result';
+            
+            // Act
+            // const result = moduleUnderTest.${tc.function}(testInput);
+            
+            // Assert
+            // expect(result).toBe(expectedOutput);
+            expect(true).toBe(true); // Placeholder assertion
+        });
+    });`).join('\n')}
+
+    describe('Integration Tests', () => {
+        test('should integrate components correctly', () => {
+            // Test component interactions
+            expect(true).toBe(true);
+        });
+    });
+
+    describe('Edge Cases', () => {
+        test('should handle null and undefined inputs', () => {
+            // Test edge cases
+            expect(true).toBe(true);
+        });
+
+        test('should handle empty inputs', () => {
+            // Test empty inputs
+            expect(true).toBe(true);
+        });
+    });
+});`;
+
+    // Generate coverage analysis
+    const coveredFunctions = [...new Set(testCases.map(tc => tc.function))];
+    const estimatedCoverage = Math.min(testCases.length * 15, 95);
+    
     const recommendations = [
-        {
-            title: 'Add Edge Case Tests',
-            description: 'Consider testing with null, undefined, and empty values',
-            priority: 'HIGH'
-        },
-        {
-            title: 'Mock External Dependencies',
-            description: 'Use mocking for external API calls and database operations',
-            priority: 'MEDIUM'
-        },
-        {
-            title: 'Test Error Scenarios',
-            description: 'Add tests for error handling and exception cases',
-            priority: 'HIGH'
-        }
+        'Implement actual assertions based on your specific code logic',
+        'Add more edge cases for boundary value testing',
+        'Consider adding performance tests for critical functions',
+        'Mock external dependencies for isolated unit testing'
     ];
 
-    const coverage = Math.min(testCases.length * 20, 100);
+    // Generate dependencies based on test types
+    const dependencies = ['jest', '@jest/globals'];
+    if (testCases.some(tc => tc.type === 'integration')) {
+        dependencies.push('supertest', 'nock');
+    }
+    if (code.includes('async') || code.includes('Promise')) {
+        dependencies.push('@testing-library/jest-dom');
+    }
 
     res.json({
         success: true,
-        filename: `tests_${Date.now()}.${language}`,
-        testCases,
-        recommendations,
-        summary: {
-            totalTests: testCases.length,
-            unitTests: testCases.filter(t => t.type === 'Unit Test').length,
-            integrationTests: testCases.filter(t => t.type === 'Integration Test').length,
-            estimatedCoverage: coverage
+        filename: `test_${Date.now()}.${language || 'js'}`,
+        tests: {
+            testFile: testFileContent,
+            testCases: testCases,
+            coverage: {
+                estimatedPercentage: estimatedCoverage,
+                coveredFunctions: coveredFunctions,
+                recommendations: recommendations
+            },
+            framework: 'Jest',
+            dependencies: dependencies,
+            metadata: {
+                originalFile: `code.${language || 'js'}`,
+                language: language || 'javascript',
+                framework: 'Jest',
+                generatedAt: new Date().toISOString()
+            }
         },
-        language: language || 'unknown',
+        language: language || 'javascript',
         timestamp: new Date().toISOString()
     });
 });
