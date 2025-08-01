@@ -1,0 +1,304 @@
+{
+  "timestamp": "2025-08-01T11:34:10.261Z",
+  "summary": {
+    "totalFiles": 4,
+    "totalVulnerabilities": 28,
+    "highRiskFiles": 2,
+    "averageRiskScore": 50
+  },
+  "results": {
+    "vulnerable-code.ts": {
+      "vulnerabilities": [
+        {
+          "type": "Hardcoded API Key",
+          "severity": "HIGH",
+          "line": 4,
+          "description": "Hardcoded API key detected. This exposes sensitive credentials in source code.",
+          "code": "API_KEY = \"sk-1234567890abcdef\"",
+          "recommendation": "Move API keys to environment variables or secure configuration."
+        },
+        {
+          "type": "SQL Injection",
+          "severity": "HIGH",
+          "line": 14,
+          "description": "Potential SQL injection vulnerability through dynamic query construction.",
+          "code": "SELECT * FROM users WHERE id = ${userId}",
+          "recommendation": "Use parameterized queries or prepared statements."
+        },
+        {
+          "type": "SQL Injection",
+          "severity": "HIGH",
+          "line": 35,
+          "description": "Potential SQL injection vulnerability through dynamic query construction.",
+          "code": "SELECT * FROM ${table} WHERE ${condition}",
+          "recommendation": "Use parameterized queries or prepared statements."
+        },
+        {
+          "type": "SQL Injection",
+          "severity": "HIGH",
+          "line": 14,
+          "description": "Potential SQL injection vulnerability through dynamic query construction.",
+          "code": "query = `SELECT * FROM users WHERE id = ${userId}`",
+          "recommendation": "Use parameterized queries or prepared statements."
+        },
+        {
+          "type": "Weak Cryptographic Algorithm",
+          "severity": "MEDIUM",
+          "line": 26,
+          "description": "Weak cryptographic algorithm detected (MD5, SHA1).",
+          "code": "createHash('md5')",
+          "recommendation": "Use stronger algorithms like SHA-256 or bcrypt for passwords."
+        },
+        {
+          "type": "Hardcoded Password",
+          "severity": "MEDIUM",
+          "line": 5,
+          "description": "Hardcoded password detected in source code.",
+          "code": "PASSWORD = \"admin123\"",
+          "recommendation": "Store passwords in environment variables or secure vaults."
+        },
+        {
+          "type": "Hardcoded Password",
+          "severity": "MEDIUM",
+          "line": 5,
+          "description": "Hardcoded password detected in source code.",
+          "code": "DB_PASSWORD = \"admin123\"",
+          "recommendation": "Store passwords in environment variables or secure vaults."
+        },
+        {
+          "type": "Insecure Random",
+          "severity": "LOW",
+          "line": 40,
+          "description": "Insecure random number generation using Math.random().",
+          "code": "Math.random()",
+          "recommendation": "Use crypto.randomBytes() for cryptographically secure random generation."
+        }
+      ],
+      "riskScore": 100,
+      "summary": {
+        "totalIssues": 8,
+        "high": 4,
+        "medium": 3,
+        "low": 1
+      },
+      "metadata": {
+        "language": "typescript",
+        "scanTime": "2025-08-01T11:34:10.194Z",
+        "linesOfCode": 44
+      }
+    },
+    "code-quality-issues.ts": {
+      "vulnerabilities": [],
+      "riskScore": 0,
+      "summary": {
+        "totalIssues": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      },
+      "metadata": {
+        "language": "typescript",
+        "scanTime": "2025-08-01T11:34:10.225Z",
+        "linesOfCode": 77
+      }
+    },
+    "functions-for-testing.ts": {
+      "vulnerabilities": [],
+      "riskScore": 0,
+      "summary": {
+        "totalIssues": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0
+      },
+      "metadata": {
+        "language": "typescript",
+        "scanTime": "2025-08-01T11:34:10.227Z",
+        "linesOfCode": 95
+      }
+    },
+    "comprehensive-vulnerabilities.ts": {
+      "vulnerabilities": [
+        {
+          "type": "Hardcoded API Key",
+          "severity": "HIGH",
+          "line": 12,
+          "description": "Hardcoded API key detected. This exposes sensitive credentials in source code.",
+          "code": "sk-1234567890abcdef1234567890abcdef1234567890123456",
+          "recommendation": "Move API keys to environment variables or secure configuration."
+        },
+        {
+          "type": "Hardcoded API Key",
+          "severity": "HIGH",
+          "line": 12,
+          "description": "Hardcoded API key detected. This exposes sensitive credentials in source code.",
+          "code": "API_KEY = \"sk-1234567890abcdef1234567890abcdef12345678901234567890\"",
+          "recommendation": "Move API keys to environment variables or secure configuration."
+        },
+        {
+          "type": "Hardcoded API Key",
+          "severity": "HIGH",
+          "line": 12,
+          "description": "Hardcoded API key detected. This exposes sensitive credentials in source code.",
+          "code": "OPENAI_API_KEY = \"sk-1234567890abcdef1234567890abcdef12345678901234567890\"",
+          "recommendation": "Move API keys to environment variables or secure configuration."
+        },
+        {
+          "type": "Hardcoded API Key",
+          "severity": "HIGH",
+          "line": 156,
+          "description": "Hardcoded API key detected. This exposes sensitive credentials in source code.",
+          "code": "STRIPE_SECRET_KEY = \"sk_live_1234567890abcdef1234567890abcdef\"",
+          "recommendation": "Move API keys to environment variables or secure configuration."
+        },
+        {
+          "type": "Hardcoded API Key",
+          "severity": "HIGH",
+          "line": 157,
+          "description": "Hardcoded API key detected. This exposes sensitive credentials in source code.",
+          "code": "AWS_SECRET_ACCESS_KEY = \"wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\"",
+          "recommendation": "Move API keys to environment variables or secure configuration."
+        },
+        {
+          "type": "SQL Injection",
+          "severity": "HIGH",
+          "line": 19,
+          "description": "Potential SQL injection vulnerability through dynamic query construction.",
+          "code": "SELECT * FROM users WHERE email = '${email}",
+          "recommendation": "Use parameterized queries or prepared statements."
+        },
+        {
+          "type": "SQL Injection",
+          "severity": "HIGH",
+          "line": 25,
+          "description": "Potential SQL injection vulnerability through dynamic query construction.",
+          "code": "SELECT * FROM users WHERE username LIKE '%${searchTerm}%' ORDER BY ${sortBy}",
+          "recommendation": "Use parameterized queries or prepared statements."
+        },
+        {
+          "type": "SQL Injection",
+          "severity": "HIGH",
+          "line": 19,
+          "description": "Potential SQL injection vulnerability through dynamic query construction.",
+          "code": "query = `SELECT * FROM users WHERE email = '${email}'`",
+          "recommendation": "Use parameterized queries or prepared statements."
+        },
+        {
+          "type": "SQL Injection",
+          "severity": "HIGH",
+          "line": 25,
+          "description": "Potential SQL injection vulnerability through dynamic query construction.",
+          "code": "query = `SELECT * FROM users WHERE username LIKE '%${searchTerm}%' ORDER BY ${sortBy}`",
+          "recommendation": "Use parameterized queries or prepared statements."
+        },
+        {
+          "type": "SQL Injection",
+          "severity": "HIGH",
+          "line": 115,
+          "description": "Potential SQL injection vulnerability through dynamic query construction.",
+          "code": "query = `DELETE FROM users WHERE id = ${userId}`",
+          "recommendation": "Use parameterized queries or prepared statements."
+        },
+        {
+          "type": "Cross-Site Scripting (XSS)",
+          "severity": "MEDIUM",
+          "line": 37,
+          "description": "Potential XSS vulnerability through unsafe DOM manipulation.",
+          "code": "innerHTML = profileHtml; // XSS vulnerability\n",
+          "recommendation": "Sanitize user input and use safe DOM manipulation methods."
+        },
+        {
+          "type": "Cross-Site Scripting (XSS)",
+          "severity": "MEDIUM",
+          "line": 43,
+          "description": "Potential XSS vulnerability through unsafe DOM manipulation.",
+          "code": "document.write(`<div class=\"notification\">${message}</div>`)",
+          "recommendation": "Sanitize user input and use safe DOM manipulation methods."
+        },
+        {
+          "type": "Weak Cryptographic Algorithm",
+          "severity": "MEDIUM",
+          "line": 51,
+          "description": "Weak cryptographic algorithm detected (MD5, SHA1).",
+          "code": "createHash('md5')",
+          "recommendation": "Use stronger algorithms like SHA-256 or bcrypt for passwords."
+        },
+        {
+          "type": "Weak Cryptographic Algorithm",
+          "severity": "MEDIUM",
+          "line": 57,
+          "description": "Weak cryptographic algorithm detected (MD5, SHA1).",
+          "code": "createHash('sha1')",
+          "recommendation": "Use stronger algorithms like SHA-256 or bcrypt for passwords."
+        },
+        {
+          "type": "Hardcoded Password",
+          "severity": "MEDIUM",
+          "line": 13,
+          "description": "Hardcoded password detected in source code.",
+          "code": "PASSWORD = \"admin123!@#\"",
+          "recommendation": "Store passwords in environment variables or secure vaults."
+        },
+        {
+          "type": "Hardcoded Password",
+          "severity": "MEDIUM",
+          "line": 72,
+          "description": "Hardcoded password detected in source code.",
+          "code": "password: 'password123'",
+          "recommendation": "Store passwords in environment variables or secure vaults."
+        },
+        {
+          "type": "Command Injection",
+          "severity": "HIGH",
+          "line": 87,
+          "description": "Potential command injection through dynamic command execution.",
+          "code": "exec(`ls -la ${userInput}`",
+          "recommendation": "Validate input and use safe command execution methods."
+        },
+        {
+          "type": "Insecure Random",
+          "severity": "LOW",
+          "line": 62,
+          "description": "Insecure random number generation using Math.random().",
+          "code": "Math.random()",
+          "recommendation": "Use crypto.randomBytes() for cryptographically secure random generation."
+        },
+        {
+          "type": "Insecure Random",
+          "severity": "LOW",
+          "line": 63,
+          "description": "Insecure random number generation using Math.random().",
+          "code": "Math.random()",
+          "recommendation": "Use crypto.randomBytes() for cryptographically secure random generation."
+        },
+        {
+          "type": "Insecure Random",
+          "severity": "LOW",
+          "line": 64,
+          "description": "Insecure random number generation using Math.random().",
+          "code": "Math.random()",
+          "recommendation": "Use crypto.randomBytes() for cryptographically secure random generation."
+        }
+      ],
+      "riskScore": 100,
+      "summary": {
+        "totalIssues": 20,
+        "high": 11,
+        "medium": 6,
+        "low": 3
+      },
+      "metadata": {
+        "language": "typescript",
+        "scanTime": "2025-08-01T11:34:10.259Z",
+        "linesOfCode": 167
+      }
+    }
+  },
+  "recommendations": [
+    "🚨 High vulnerability count detected. Immediate security review recommended.",
+    "⚠️ Critical risk files identified. Urgent security fixes required.",
+    "🔒 Enable automated security scanning in CI/CD pipeline.",
+    "📚 Implement security training for development team.",
+    "🔍 Schedule regular security audits and penetration testing."
+  ]
+}

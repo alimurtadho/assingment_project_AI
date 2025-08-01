@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-08-01T11:34:10.405Z",
+  "sourceFile": "functions-for-testing.ts",
+  "testsGenerated": {
+    "unitTests": 7,
+    "integrationTests": 0,
+    "edgeCaseTests": 0,
+    "securityTests": 0
+  },
+  "totalTestCases": 7,
+  "coverage": {
+    "functions": [
+      "fibonacci",
+      "isPalindrome",
+      "fetchWithRetry"
+    ],
+    "classes": [
+      "PriceCalculator",
+      "UserValidator"
+    ],
+    "methods": [
+      "calculateDiscount",
+      "calculateBulkDiscount",
+      "applyTierDiscount",
+      "validateEmail",
+      "validatePassword",
+      "validateAge"
+    ]
+  }
+}

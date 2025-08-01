@@ -1,0 +1,133 @@
+{
+  "fileName": "functions-for-testing.ts",
+  "timestamp": "2025-08-01T11:34:10.502Z",
+  "summary": {
+    "totalIssues": 12,
+    "security": 2,
+    "performance": 0,
+    "maintainability": 8,
+    "accessibility": 0,
+    "bestPractices": 2
+  },
+  "issues": {
+    "security": [
+      {
+        "type": "Input Validation",
+        "severity": "MEDIUM",
+        "line": 80,
+        "description": "Function may lack input validation",
+        "recommendation": "Add input validation to prevent invalid data processing",
+        "code": "function fetchWithRetry(url: string, maxRetries: number = 3)"
+      },
+      {
+        "type": "Prototype Pollution",
+        "severity": "HIGH",
+        "line": 43,
+        "description": "Potential prototype pollution vulnerability",
+        "recommendation": "Validate object keys and use Object.hasOwnProperty checks",
+        "code": "[] ="
+      }
+    ],
+    "performance": [],
+    "maintainability": [
+      {
+        "type": "Magic Numbers",
+        "severity": "LOW",
+        "line": 10,
+        "description": "Magic number found",
+        "recommendation": "Extract to named constant",
+        "code": "100"
+      },
+      {
+        "type": "Magic Numbers",
+        "severity": "LOW",
+        "line": 21,
+        "description": "Magic number found",
+        "recommendation": "Extract to named constant",
+        "code": "100"
+      },
+      {
+        "type": "Magic Numbers",
+        "severity": "LOW",
+        "line": 29,
+        "description": "Magic number found",
+        "recommendation": "Extract to named constant",
+        "code": "1000"
+      },
+      {
+        "type": "Magic Numbers",
+        "severity": "LOW",
+        "line": 29,
+        "description": "Magic number found",
+        "recommendation": "Extract to named constant",
+        "code": "15"
+      },
+      {
+        "type": "Magic Numbers",
+        "severity": "LOW",
+        "line": 30,
+        "description": "Magic number found",
+        "recommendation": "Extract to named constant",
+        "code": "500"
+      },
+      {
+        "type": "Magic Numbers",
+        "severity": "LOW",
+        "line": 31,
+        "description": "Magic number found",
+        "recommendation": "Extract to named constant",
+        "code": "100"
+      },
+      {
+        "type": "Magic Numbers",
+        "severity": "LOW",
+        "line": 65,
+        "description": "Magic number found",
+        "recommendation": "Extract to named constant",
+        "code": "150"
+      },
+      {
+        "type": "Magic Numbers",
+        "severity": "LOW",
+        "line": 88,
+        "description": "Magic number found",
+        "recommendation": "Extract to named constant",
+        "code": "1000"
+      }
+    ],
+    "accessibility": [],
+    "bestPractices": [
+      {
+        "type": "Error Handling",
+        "severity": "INFO",
+        "line": 80,
+        "description": "Missing or incomplete error handling",
+        "recommendation": "Add proper try-catch blocks for error handling",
+        "code": "async function fetchWithRetry(url: string, maxRetries: number = 3): Promise<Resp"
+      },
+      {
+        "type": "Const Usage",
+        "severity": "INFO",
+        "line": 81,
+        "description": "Variable declared with \"let\" but never reassigned",
+        "recommendation": "Use \"const\" for variables that are not reassigned",
+        "code": "let attempt = 1;"
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "category": "Security",
+      "recommendation": "Address security vulnerabilities immediately",
+      "impact": "Critical security risks could be exploited by attackers"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Maintainability",
+      "recommendation": "Refactor code for better maintainability",
+      "impact": "Easier code maintenance and future development"
+    }
+  ],
+  "qualityScore": 62
+}

@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeGuardian AI - Demo Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f5f7fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; text-align: center; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        .stat-number { font-size: 2.5em; font-weight: bold; margin-bottom: 10px; }
+        .stat-label { color: #666; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; }
+        .vulnerabilities-table { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8f9fa; padding: 15px; text-align: left; font-weight: 600; color: #333; }
+        td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+        .severity-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; }
+        .high { background: #fee; color: #d63031; }
+        .medium { background: #fff3cd; color: #e17055; }
+        .low { background: #d1ecf1; color: #00b894; }
+        .high-risk { background-color: #fee; }
+        .medium-risk { background-color: #fff3cd; }
+        .low-risk { background-color: #d1ecf1; }
+        .recommendations { background: white; padding: 25px; border-radius: 10px; margin-top: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .recommendations ul { list-style: none; padding: 0; }
+        .recommendations li { padding: 10px 0; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ CodeGuardian AI - Demo Security Report</h1>
+            <p>Generated: 2025-08-01T11:34:10.261Z</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" style="color: #667eea;">4</div>
+                <div class="stat-label">Files Analyzed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #e17055;">28</div>
+                <div class="stat-label">Vulnerabilities Found</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #d63031;">2</div>
+                <div class="stat-label">High Risk Files</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #00b894;">50</div>
+                <div class="stat-label">Average Risk Score</div>
+            </div>
+        </div>
+        
+        <div class="vulnerabilities-table">
+            <h2 style="padding: 20px; margin: 0; background: #f8f9fa; border-bottom: 1px solid #dee2e6;">🔍 Detailed Vulnerabilities</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Vulnerability Type</th>
+                        <th>Severity</th>
+                        <th>Line</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+          <tr class="high-risk">
+            <td>vulnerable-code.ts</td>
+            <td>Hardcoded API Key</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>4</td>
+            <td>Hardcoded API key detected. This exposes sensitive credentials in source code.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>vulnerable-code.ts</td>
+            <td>SQL Injection</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>14</td>
+            <td>Potential SQL injection vulnerability through dynamic query construction.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>vulnerable-code.ts</td>
+            <td>SQL Injection</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>35</td>
+            <td>Potential SQL injection vulnerability through dynamic query construction.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>vulnerable-code.ts</td>
+            <td>SQL Injection</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>14</td>
+            <td>Potential SQL injection vulnerability through dynamic query construction.</td>
+          </tr>
+        
+          <tr class="medium-risk">
+            <td>vulnerable-code.ts</td>
+            <td>Weak Cryptographic Algorithm</td>
+            <td><span class="severity-badge medium">MEDIUM</span></td>
+            <td>26</td>
+            <td>Weak cryptographic algorithm detected (MD5, SHA1).</td>
+          </tr>
+        
+          <tr class="medium-risk">
+            <td>vulnerable-code.ts</td>
+            <td>Hardcoded Password</td>
+            <td><span class="severity-badge medium">MEDIUM</span></td>
+            <td>5</td>
+            <td>Hardcoded password detected in source code.</td>
+          </tr>
+        
+          <tr class="medium-risk">
+            <td>vulnerable-code.ts</td>
+            <td>Hardcoded Password</td>
+            <td><span class="severity-badge medium">MEDIUM</span></td>
+            <td>5</td>
+            <td>Hardcoded password detected in source code.</td>
+          </tr>
+        
+          <tr class="low-risk">
+            <td>vulnerable-code.ts</td>
+            <td>Insecure Random</td>
+            <td><span class="severity-badge low">LOW</span></td>
+            <td>40</td>
+            <td>Insecure random number generation using Math.random().</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Hardcoded API Key</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>12</td>
+            <td>Hardcoded API key detected. This exposes sensitive credentials in source code.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Hardcoded API Key</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>12</td>
+            <td>Hardcoded API key detected. This exposes sensitive credentials in source code.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Hardcoded API Key</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>12</td>
+            <td>Hardcoded API key detected. This exposes sensitive credentials in source code.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Hardcoded API Key</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>156</td>
+            <td>Hardcoded API key detected. This exposes sensitive credentials in source code.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Hardcoded API Key</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>157</td>
+            <td>Hardcoded API key detected. This exposes sensitive credentials in source code.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>SQL Injection</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>19</td>
+            <td>Potential SQL injection vulnerability through dynamic query construction.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>SQL Injection</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>25</td>
+            <td>Potential SQL injection vulnerability through dynamic query construction.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>SQL Injection</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>19</td>
+            <td>Potential SQL injection vulnerability through dynamic query construction.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>SQL Injection</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>25</td>
+            <td>Potential SQL injection vulnerability through dynamic query construction.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>SQL Injection</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>115</td>
+            <td>Potential SQL injection vulnerability through dynamic query construction.</td>
+          </tr>
+        
+          <tr class="medium-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Cross-Site Scripting (XSS)</td>
+            <td><span class="severity-badge medium">MEDIUM</span></td>
+            <td>37</td>
+            <td>Potential XSS vulnerability through unsafe DOM manipulation.</td>
+          </tr>
+        
+          <tr class="medium-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Cross-Site Scripting (XSS)</td>
+            <td><span class="severity-badge medium">MEDIUM</span></td>
+            <td>43</td>
+            <td>Potential XSS vulnerability through unsafe DOM manipulation.</td>
+          </tr>
+        
+          <tr class="medium-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Weak Cryptographic Algorithm</td>
+            <td><span class="severity-badge medium">MEDIUM</span></td>
+            <td>51</td>
+            <td>Weak cryptographic algorithm detected (MD5, SHA1).</td>
+          </tr>
+        
+          <tr class="medium-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Weak Cryptographic Algorithm</td>
+            <td><span class="severity-badge medium">MEDIUM</span></td>
+            <td>57</td>
+            <td>Weak cryptographic algorithm detected (MD5, SHA1).</td>
+          </tr>
+        
+          <tr class="medium-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Hardcoded Password</td>
+            <td><span class="severity-badge medium">MEDIUM</span></td>
+            <td>13</td>
+            <td>Hardcoded password detected in source code.</td>
+          </tr>
+        
+          <tr class="medium-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Hardcoded Password</td>
+            <td><span class="severity-badge medium">MEDIUM</span></td>
+            <td>72</td>
+            <td>Hardcoded password detected in source code.</td>
+          </tr>
+        
+          <tr class="high-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Command Injection</td>
+            <td><span class="severity-badge high">HIGH</span></td>
+            <td>87</td>
+            <td>Potential command injection through dynamic command execution.</td>
+          </tr>
+        
+          <tr class="low-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Insecure Random</td>
+            <td><span class="severity-badge low">LOW</span></td>
+            <td>62</td>
+            <td>Insecure random number generation using Math.random().</td>
+          </tr>
+        
+          <tr class="low-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Insecure Random</td>
+            <td><span class="severity-badge low">LOW</span></td>
+            <td>63</td>
+            <td>Insecure random number generation using Math.random().</td>
+          </tr>
+        
+          <tr class="low-risk">
+            <td>comprehensive-vulnerabilities.ts</td>
+            <td>Insecure Random</td>
+            <td><span class="severity-badge low">LOW</span></td>
+            <td>64</td>
+            <td>Insecure random number generation using Math.random().</td>
+          </tr>
+        
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="recommendations">
+            <h2>💡 Security Recommendations</h2>
+            <ul>
+                <li>🚨 High vulnerability count detected. Immediate security review recommended.</li><li>⚠️ Critical risk files identified. Urgent security fixes required.</li><li>🔒 Enable automated security scanning in CI/CD pipeline.</li><li>📚 Implement security training for development team.</li><li>🔍 Schedule regular security audits and penetration testing.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

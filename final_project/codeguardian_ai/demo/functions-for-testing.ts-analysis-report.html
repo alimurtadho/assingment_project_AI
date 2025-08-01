@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeGuardian AI - Advanced Analysis Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f5f7fa; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 30px; }
+        .quality-score { font-size: 3em; font-weight: bold; margin: 10px 0; }
+        .score-excellent { color: #2ecc71; }
+        .score-good { color: #f39c12; }
+        .score-poor { color: #e74c3c; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .summary-card { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .issue-section { background: white; margin-bottom: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .section-header { padding: 20px; background: #f8f9fa; border-bottom: 1px solid #dee2e6; }
+        .issue-item { padding: 15px 20px; border-bottom: 1px solid #eee; }
+        .issue-item:last-child { border-bottom: none; }
+        .severity-high { border-left: 4px solid #e74c3c; }
+        .severity-medium { border-left: 4px solid #f39c12; }
+        .severity-low { border-left: 4px solid #3498db; }
+        .severity-info { border-left: 4px solid #9b59b6; }
+        .code-snippet { background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 0.9em; margin: 10px 0; }
+        .recommendations { background: #e8f5e8; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .rec-high { color: #c0392b; font-weight: bold; }
+        .rec-medium { color: #d68910; font-weight: bold; }
+        .rec-low { color: #5d6d7e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ CodeGuardian AI - Advanced Analysis</h1>
+            <p>File: functions-for-testing.ts</p>
+            <div class="quality-score score-good">62/100</div>
+            <p>Quality Score</p>
+            <small>Generated: 2025-08-01T11:34:10.502Z</small>
+        </div>
+
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>🔒 Security</h3>
+                <div style="font-size: 2em; color: #e74c3c;">2</div>
+                <p>Issues Found</p>
+            </div>
+            <div class="summary-card">
+                <h3>⚡ Performance</h3>
+                <div style="font-size: 2em; color: #f39c12;">0</div>
+                <p>Issues Found</p>
+            </div>
+            <div class="summary-card">
+                <h3>🔧 Maintainability</h3>
+                <div style="font-size: 2em; color: #3498db;">8</div>
+                <p>Issues Found</p>
+            </div>
+            <div class="summary-card">
+                <h3>✨ Best Practices</h3>
+                <div style="font-size: 2em; color: #9b59b6;">2</div>
+                <p>Suggestions</p>
+            </div>
+        </div>
+
+        
+        <div class="issue-section">
+          <div class="section-header">
+            <h3>🔒 Security Issues</h3>
+          </div>
+      
+          <div class="issue-item severity-medium">
+            <strong>Input Validation</strong> (Line 80)
+            <p>Function may lack input validation</p>
+            <div class="code-snippet">function fetchWithRetry(url: string, maxRetries: number = 3)</div>
+            <p><strong>Recommendation:</strong> Add input validation to prevent invalid data processing</p>
+          </div>
+        
+          <div class="issue-item severity-high">
+            <strong>Prototype Pollution</strong> (Line 43)
+            <p>Potential prototype pollution vulnerability</p>
+            <div class="code-snippet">[] =</div>
+            <p><strong>Recommendation:</strong> Validate object keys and use Object.hasOwnProperty checks</p>
+          </div>
+        </div>
+        <div class="issue-section">
+          <div class="section-header">
+            <h3>🔧 Maintainability Issues</h3>
+          </div>
+      
+          <div class="issue-item severity-low">
+            <strong>Magic Numbers</strong> (Line 10)
+            <p>Magic number found</p>
+            <div class="code-snippet">100</div>
+            <p><strong>Recommendation:</strong> Extract to named constant</p>
+          </div>
+        
+          <div class="issue-item severity-low">
+            <strong>Magic Numbers</strong> (Line 21)
+            <p>Magic number found</p>
+            <div class="code-snippet">100</div>
+            <p><strong>Recommendation:</strong> Extract to named constant</p>
+          </div>
+        
+          <div class="issue-item severity-low">
+            <strong>Magic Numbers</strong> (Line 29)
+            <p>Magic number found</p>
+            <div class="code-snippet">1000</div>
+            <p><strong>Recommendation:</strong> Extract to named constant</p>
+          </div>
+        
+          <div class="issue-item severity-low">
+            <strong>Magic Numbers</strong> (Line 29)
+            <p>Magic number found</p>
+            <div class="code-snippet">15</div>
+            <p><strong>Recommendation:</strong> Extract to named constant</p>
+          </div>
+        
+          <div class="issue-item severity-low">
+            <strong>Magic Numbers</strong> (Line 30)
+            <p>Magic number found</p>
+            <div class="code-snippet">500</div>
+            <p><strong>Recommendation:</strong> Extract to named constant</p>
+          </div>
+        
+          <div class="issue-item severity-low">
+            <strong>Magic Numbers</strong> (Line 31)
+            <p>Magic number found</p>
+            <div class="code-snippet">100</div>
+            <p><strong>Recommendation:</strong> Extract to named constant</p>
+          </div>
+        
+          <div class="issue-item severity-low">
+            <strong>Magic Numbers</strong> (Line 65)
+            <p>Magic number found</p>
+            <div class="code-snippet">150</div>
+            <p><strong>Recommendation:</strong> Extract to named constant</p>
+          </div>
+        
+          <div class="issue-item severity-low">
+            <strong>Magic Numbers</strong> (Line 88)
+            <p>Magic number found</p>
+            <div class="code-snippet">1000</div>
+            <p><strong>Recommendation:</strong> Extract to named constant</p>
+          </div>
+        </div>
+        <div class="issue-section">
+          <div class="section-header">
+            <h3>✨ BestPractices Issues</h3>
+          </div>
+      
+          <div class="issue-item severity-info">
+            <strong>Error Handling</strong> (Line 80)
+            <p>Missing or incomplete error handling</p>
+            <div class="code-snippet">async function fetchWithRetry(url: string, maxRetries: number = 3): Promise<Resp</div>
+            <p><strong>Recommendation:</strong> Add proper try-catch blocks for error handling</p>
+          </div>
+        
+          <div class="issue-item severity-info">
+            <strong>Const Usage</strong> (Line 81)
+            <p>Variable declared with "let" but never reassigned</p>
+            <div class="code-snippet">let attempt = 1;</div>
+            <p><strong>Recommendation:</strong> Use "const" for variables that are not reassigned</p>
+          </div>
+        </div>
+
+        <div class="recommendations">
+            <h2>💡 Top Recommendations</h2>
+            
+                <div class="rec-high" style="margin-bottom: 15px;">
+                    <strong>Security:</strong> Address security vulnerabilities immediately
+                    <br><small><em>Impact: Critical security risks could be exploited by attackers</em></small>
+                </div>
+            
+                <div class="rec-medium" style="margin-bottom: 15px;">
+                    <strong>Maintainability:</strong> Refactor code for better maintainability
+                    <br><small><em>Impact: Easier code maintenance and future development</em></small>
+                </div>
+            
+        </div>
+    </div>
+</body>
+</html>

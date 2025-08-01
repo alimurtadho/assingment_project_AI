@@ -32,18 +32,41 @@ const FileUpload: React.FC<FileUploadProps> = ({ endpoint, onResults, acceptedTy
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      // Read file content as text
+      const fileContent = await file.text();
+      
+      // Determine language from file extension
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      const languageMap: { [key: string]: string } = {
+        'js': 'javascript',
+        'jsx': 'javascript',
+        'ts': 'typescript',
+        'tsx': 'typescript',
+        'py': 'python',
+        'java': 'java',
+        'cpp': 'cpp',
+        'c': 'c',
+        'php': 'php',
+        'rb': 'ruby',
+        'go': 'go',
+        'rs': 'rust'
+      };
+      
+      const language = languageMap[fileExtension || ''] || 'text';
 
-      const response = await axios.post(endpoint, formData, {
+      // Send as JSON
+      const response = await axios.post(endpoint, {
+        code: fileContent,
+        language: language
+      }, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
 
       onResults(response.data);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Upload failed');
+      setError(err.response?.data?.error?.message || err.message || 'Upload failed');
     } finally {
       setLoading(false);
     }

@@ -1,10 +1,12 @@
-curl -X POST http://localhost:3001/api/security/scan \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@demo/vulnerable-code.ts" \
+# Correct curl commands for CodeGuardian AI API
+# Backend runs on port 8000 and expects JSON format
+
+# Security Scan API (correct format)
+curl -X POST http://localhost:8000/api/security/scan \
+  -H "Content-Type: application/json" \
+  -d '{"code":"const API_KEY = \"sk-1234567890abcdef\"; console.log(API_KEY);","language":"typescript"}' \
   -w "\n\nStatus: %{http_code}\n"
 
-
-curl -X POST http://localhost:3001/api/ai-review/analyze \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@demo/code-quality-issues.ts" \
-  -w "\n\nStatus: %{http_code}\n"
+# For file upload, first create JSON payload:
+# python3 -c "import json; code=open('demo/vulnerable-code.ts').read(); json.dump({'code':code,'language':'typescript'}, open('payload.json','w'))"
+# curl -X POST http://localhost:8000/api/security/scan -H "Content-Type: application/json" -d @payload.json
