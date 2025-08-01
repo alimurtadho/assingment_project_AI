@@ -1,0 +1,69 @@
+name: Simple CI/CD Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  simple-test:
+    name: Basic Build Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: 📁 List repository structure
+        run: |
+          echo "Repository structure:"
+          find . -type f -name "*.json" | head -20
+          echo ""
+          echo "CodeGuardian project files:"
+          ls -la final_project/codeguardian_ai/ || echo "CodeGuardian directory not found"
+      
+      - name: 🔍 Check CodeGuardian backend
+        run: |
+          if [ -d "final_project/codeguardian_ai/backend" ]; then
+            echo "✅ Backend directory found"
+            cd final_project/codeguardian_ai/backend
+            if [ -f "package.json" ]; then
+              echo "✅ Backend package.json found"
+              npm install
+              echo "✅ Backend dependencies installed"
+            else
+              echo "❌ Backend package.json not found"
+            fi
+          else
+            echo "❌ Backend directory not found"
+          fi
+      
+      - name: 🔍 Check CodeGuardian frontend
+        run: |
+          if [ -d "final_project/codeguardian_ai/frontend" ]; then
+            echo "✅ Frontend directory found"
+            cd final_project/codeguardian_ai/frontend
+            if [ -f "package.json" ]; then
+              echo "✅ Frontend package.json found"
+              npm install
+              echo "✅ Frontend dependencies installed"
+              npm run build
+              echo "✅ Frontend build successful"
+            else
+              echo "❌ Frontend package.json not found"
+            fi
+          else
+            echo "❌ Frontend directory not found"
+          fi
+      
+      - name: ✅ Success Message
+        run: |
+          echo "🎉 GitHub Actions is working!"
+          echo "✅ CI/CD pipeline executed successfully!"
+          echo "🚀 CodeGuardian AI project is ready for automated testing!"

@@ -49,6 +49,22 @@ interface SecurityReportProps {
 }
 
 const SecurityReport: React.FC<SecurityReportProps> = ({ results }) => {
+  // Add safety checks and default values
+  const safeResults = {
+    success: results?.success ?? false,
+    filename: results?.filename ?? 'unknown',
+    riskScore: results?.riskScore ?? 0,
+    vulnerabilities: Array.isArray(results?.vulnerabilities) ? results.vulnerabilities : [],
+    summary: {
+      totalIssues: results?.summary?.totalIssues ?? 0,
+      high: results?.summary?.high ?? 0,
+      medium: results?.summary?.medium ?? 0,
+      low: results?.summary?.low ?? 0,
+      categories: Array.isArray(results?.summary?.categories) ? results.summary.categories : []
+    },
+    recommendations: Array.isArray(results?.recommendations) ? results.recommendations : []
+  };
+
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
       case 'HIGH': return <Error color="error" />;
@@ -82,66 +98,66 @@ const SecurityReport: React.FC<SecurityReportProps> = ({ results }) => {
       {/* Summary */}
       <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
         <Typography variant="subtitle1" gutterBottom>
-          File: {results.filename}
+          File: {safeResults.filename}
         </Typography>
         
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <Typography variant="body2" sx={{ mr: 2 }}>
-            Risk Score: {results.riskScore}/10
+            Risk Score: {safeResults.riskScore}/10
           </Typography>
           <LinearProgress
             variant="determinate"
-            value={results.riskScore * 10}
-            color={getRiskScoreColor(results.riskScore) as any}
+            value={safeResults.riskScore * 10}
+            color={getRiskScoreColor(safeResults.riskScore) as any}
             sx={{ flexGrow: 1, height: 8, borderRadius: 4 }}
           />
         </Box>
 
         <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
           <Chip 
-            label={`Total: ${results.summary.totalIssues}`} 
+            label={`Total: ${safeResults.summary.totalIssues}`} 
             variant="outlined" 
           />
-          {results.summary.high > 0 && (
+          {safeResults.summary.high > 0 && (
             <Chip 
-              label={`High: ${results.summary.high}`} 
+              label={`High: ${safeResults.summary.high}`} 
               color="error" 
               size="small"
             />
           )}
-          {results.summary.medium > 0 && (
+          {safeResults.summary.medium > 0 && (
             <Chip 
-              label={`Medium: ${results.summary.medium}`} 
+              label={`Medium: ${safeResults.summary.medium}`} 
               color="warning" 
               size="small"
             />
           )}
-          {results.summary.low > 0 && (
+          {safeResults.summary.low > 0 && (
             <Chip 
-              label={`Low: ${results.summary.low}`} 
+              label={`Low: ${safeResults.summary.low}`} 
               color="info" 
               size="small"
             />
           )}
         </Box>
 
-        {results.summary.categories.length > 0 && (
+        {safeResults.summary.categories.length > 0 && (
           <Box>
             <Typography variant="caption" color="text.secondary">
-              Categories: {results.summary.categories.join(', ')}
+              Categories: {safeResults.summary.categories.join(', ')}
             </Typography>
           </Box>
         )}
       </Paper>
 
       {/* Vulnerabilities */}
-      {results.vulnerabilities.length > 0 && (
+      {safeResults.vulnerabilities.length > 0 && (
         <Paper elevation={2} sx={{ mb: 3 }}>
           <Typography variant="subtitle1" sx={{ p: 2, pb: 0 }}>
             Vulnerabilities Found
           </Typography>
           <List>
-            {results.vulnerabilities.map((vuln, index) => (
+            {safeResults.vulnerabilities.map((vuln, index) => (
               <React.Fragment key={index}>
                 <ListItem alignItems="flex-start">
                   <ListItemIcon>
@@ -159,7 +175,7 @@ const SecurityReport: React.FC<SecurityReportProps> = ({ results }) => {
                           color={getSeverityColor(vuln.severity) as any}
                         />
                         <Chip 
-                          label={`Line ${vuln.line}`} 
+                          label={`Line ${vuln.line || 'N/A'}`} 
                           size="small" 
                           variant="outlined"
                         />
@@ -171,25 +187,29 @@ const SecurityReport: React.FC<SecurityReportProps> = ({ results }) => {
                           {vuln.description}
                         </Typography>
                         
-                        <Paper 
-                          variant="outlined" 
-                          sx={{ p: 1, mb: 1, backgroundColor: 'grey.50' }}
-                        >
-                          <Typography variant="caption" component="pre" sx={{ fontFamily: 'monospace' }}>
-                            {vuln.code}
-                          </Typography>
-                        </Paper>
+                        {vuln.code && (
+                          <Paper 
+                            variant="outlined" 
+                            sx={{ p: 1, mb: 1, backgroundColor: 'grey.50' }}
+                          >
+                            <Typography variant="caption" component="pre" sx={{ fontFamily: 'monospace' }}>
+                              {vuln.code}
+                            </Typography>
+                          </Paper>
+                        )}
                         
-                        <Alert severity="info" sx={{ mt: 1 }}>
-                          <Typography variant="body2">
-                            <strong>Recommendation:</strong> {vuln.recommendation}
-                          </Typography>
-                        </Alert>
+                        {vuln.recommendation && (
+                          <Alert severity="info" sx={{ mt: 1 }}>
+                            <Typography variant="body2">
+                              <strong>Recommendation:</strong> {vuln.recommendation}
+                            </Typography>
+                          </Alert>
+                        )}
                       </Box>
                     }
                   />
                 </ListItem>
-                {index < results.vulnerabilities.length - 1 && <Divider />}
+                {index < safeResults.vulnerabilities.length - 1 && <Divider />}
               </React.Fragment>
             ))}
           </List>
@@ -197,13 +217,13 @@ const SecurityReport: React.FC<SecurityReportProps> = ({ results }) => {
       )}
 
       {/* Recommendations */}
-      {results.recommendations.length > 0 && (
+      {safeResults.recommendations.length > 0 && (
         <Paper elevation={2}>
           <Typography variant="subtitle1" sx={{ p: 2, pb: 0 }}>
             General Recommendations
           </Typography>
           <List>
-            {results.recommendations.map((rec, index) => (
+            {safeResults.recommendations.map((rec, index) => (
               <React.Fragment key={index}>
                 <ListItem>
                   <ListItemIcon>
@@ -225,17 +245,17 @@ const SecurityReport: React.FC<SecurityReportProps> = ({ results }) => {
                     secondary={rec.description}
                   />
                 </ListItem>
-                {index < results.recommendations.length - 1 && <Divider />}
+                {index < safeResults.recommendations.length - 1 && <Divider />}
               </React.Fragment>
             ))}
           </List>
         </Paper>
       )}
 
-      {results.vulnerabilities.length === 0 && (
+      {safeResults.vulnerabilities.length === 0 && (
         <Alert severity="success">
           <Typography variant="body1">
-            🎉 No security vulnerabilities found in {results.filename}!
+            🎉 No security vulnerabilities found in {safeResults.filename}!
           </Typography>
         </Alert>
       )}

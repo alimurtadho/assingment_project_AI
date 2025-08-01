@@ -27,24 +27,52 @@ interface CodeReviewProps {
   results: {
     success: boolean;
     filename: string;
-    review: {
-      overallScore: number;
-      summary: string;
-      issues: Array<{
-        type: string;
-        severity: 'HIGH' | 'MEDIUM' | 'LOW';
-        line?: number;
-        description: string;
-        recommendation: string;
-        example?: string;
-      }>;
-      strengths: string[];
-      suggestions: string[];
+    qualityScore: number;
+    issues: Array<{
+      type: string;
+      severity: 'HIGH' | 'MEDIUM' | 'LOW';
+      line?: number;
+      description: string;
+      suggestion: string;
+      category: string;
+    }>;
+    suggestions: Array<{
+      title: string;
+      description: string;
+      priority: string;
+      category: string;
+    }>;
+    summary: {
+      totalIssues: number;
+      high: number;
+      medium: number;
+      low: number;
+      categories: string[];
     };
+    language: string;
+    timestamp: string;
   };
 }
 
 const CodeReview: React.FC<CodeReviewProps> = ({ results }) => {
+  // Add safety checks
+  const safeResults = {
+    success: results?.success ?? false,
+    filename: results?.filename ?? 'unknown',
+    qualityScore: results?.qualityScore ?? 0,
+    issues: Array.isArray(results?.issues) ? results.issues : [],
+    suggestions: Array.isArray(results?.suggestions) ? results.suggestions : [],
+    summary: {
+      totalIssues: results?.summary?.totalIssues ?? 0,
+      high: results?.summary?.high ?? 0,
+      medium: results?.summary?.medium ?? 0,
+      low: results?.summary?.low ?? 0,
+      categories: Array.isArray(results?.summary?.categories) ? results.summary.categories : []
+    },
+    language: results?.language ?? 'unknown',
+    timestamp: results?.timestamp ?? new Date().toISOString()
+  };
+
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
       case 'HIGH': return <Error color="error" />;
@@ -64,15 +92,15 @@ const CodeReview: React.FC<CodeReviewProps> = ({ results }) => {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 8) return 'success';
-    if (score >= 6) return 'warning';
+    if (score >= 80) return 'success';
+    if (score >= 60) return 'warning';
     return 'error';
   };
 
   const getScoreLabel = (score: number) => {
-    if (score >= 8) return 'Excellent';
-    if (score >= 6) return 'Good';
-    if (score >= 4) return 'Fair';
+    if (score >= 80) return 'Excellent';
+    if (score >= 60) return 'Good';
+    if (score >= 40) return 'Fair';
     return 'Needs Improvement';
   };
 
@@ -87,34 +115,58 @@ const CodeReview: React.FC<CodeReviewProps> = ({ results }) => {
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <Psychology color="primary" sx={{ mr: 1 }} />
           <Typography variant="subtitle1">
-            File: {results.filename}
+            File: {safeResults.filename}
           </Typography>
         </Box>
         
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <Typography variant="h4" sx={{ mr: 2 }}>
-            {results.review.overallScore}/10
+            {safeResults.qualityScore}/100
           </Typography>
           <Chip 
-            label={getScoreLabel(results.review.overallScore)} 
-            color={getScoreColor(results.review.overallScore) as any}
+            label={getScoreLabel(safeResults.qualityScore)} 
+            color={getScoreColor(safeResults.qualityScore) as any}
             sx={{ fontSize: '1rem', padding: '8px 16px' }}
           />
         </Box>
 
-        <Typography variant="body1" color="text.secondary">
-          {results.review.summary}
-        </Typography>
+        <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+          <Chip 
+            label={`Total Issues: ${safeResults.summary.totalIssues}`} 
+            variant="outlined" 
+          />
+          {safeResults.summary.high > 0 && (
+            <Chip 
+              label={`High: ${safeResults.summary.high}`} 
+              color="error" 
+              size="small"
+            />
+          )}
+          {safeResults.summary.medium > 0 && (
+            <Chip 
+              label={`Medium: ${safeResults.summary.medium}`} 
+              color="warning" 
+              size="small"
+            />
+          )}
+          {safeResults.summary.low > 0 && (
+            <Chip 
+              label={`Low: ${safeResults.summary.low}`} 
+              color="info" 
+              size="small"
+            />
+          )}
+        </Box>
       </Paper>
 
       {/* Issues */}
-      {results.review.issues.length > 0 && (
+      {safeResults.issues.length > 0 && (
         <Paper elevation={2} sx={{ mb: 3 }}>
           <Typography variant="subtitle1" sx={{ p: 2, pb: 0 }}>
-            Issues Found ({results.review.issues.length})
+            Issues Found ({safeResults.issues.length})
           </Typography>
           <List>
-            {results.review.issues.map((issue, index) => (
+            {safeResults.issues.map((issue, index) => (
               <React.Fragment key={index}>
                 <ListItem alignItems="flex-start">
                   <ListItemIcon>
@@ -138,6 +190,12 @@ const CodeReview: React.FC<CodeReviewProps> = ({ results }) => {
                             variant="outlined"
                           />
                         )}
+                        <Chip 
+                          label={issue.category} 
+                          size="small" 
+                          variant="outlined"
+                          color="primary"
+                        />
                       </Box>
                     }
                     secondary={
@@ -148,90 +206,62 @@ const CodeReview: React.FC<CodeReviewProps> = ({ results }) => {
                         
                         <Alert severity="info" sx={{ mb: 1 }}>
                           <Typography variant="body2">
-                            <strong>Recommendation:</strong> {issue.recommendation}
+                            <strong>Suggestion:</strong> {issue.suggestion}
                           </Typography>
                         </Alert>
-
-                        {issue.example && (
-                          <Accordion>
-                            <AccordionSummary expandIcon={<ExpandMore />}>
-                              <Typography variant="body2" color="primary">
-                                View Example
-                              </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              <Paper 
-                                variant="outlined" 
-                                sx={{ p: 2, backgroundColor: 'grey.50' }}
-                              >
-                                <Typography 
-                                  variant="caption" 
-                                  component="pre" 
-                                  sx={{ 
-                                    fontFamily: 'monospace',
-                                    whiteSpace: 'pre-wrap',
-                                    overflow: 'auto'
-                                  }}
-                                >
-                                  {issue.example}
-                                </Typography>
-                              </Paper>
-                            </AccordionDetails>
-                          </Accordion>
-                        )}
                       </Box>
                     }
                   />
                 </ListItem>
-                {index < results.review.issues.length - 1 && <Divider />}
+                {index < safeResults.issues.length - 1 && <Divider />}
               </React.Fragment>
             ))}
           </List>
         </Paper>
       )}
 
-      {/* Strengths */}
-      {results.review.strengths.length > 0 && (
-        <Paper elevation={2} sx={{ mb: 3 }}>
-          <Typography variant="subtitle1" sx={{ p: 2, pb: 0 }}>
-            Code Strengths
-          </Typography>
-          <List>
-            {results.review.strengths.map((strength, index) => (
-              <ListItem key={index}>
-                <ListItemIcon>
-                  <CheckCircle color="success" />
-                </ListItemIcon>
-                <ListItemText primary={strength} />
-              </ListItem>
-            ))}
-          </List>
-        </Paper>
-      )}
-
       {/* Suggestions */}
-      {results.review.suggestions.length > 0 && (
+      {safeResults.suggestions.length > 0 && (
         <Paper elevation={2}>
           <Typography variant="subtitle1" sx={{ p: 2, pb: 0 }}>
-            General Suggestions
+            Improvement Suggestions
           </Typography>
           <List>
-            {results.review.suggestions.map((suggestion, index) => (
+            {safeResults.suggestions.map((suggestion, index) => (
               <ListItem key={index}>
                 <ListItemIcon>
-                  <Info color="primary" />
+                  <Psychology color="primary" />
                 </ListItemIcon>
-                <ListItemText primary={suggestion} />
+                <ListItemText 
+                  primary={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Typography variant="subtitle2">
+                        {suggestion.title}
+                      </Typography>
+                      <Chip 
+                        label={suggestion.priority} 
+                        size="small" 
+                        color={suggestion.priority === 'HIGH' ? 'error' : 'primary'}
+                      />
+                      <Chip 
+                        label={suggestion.category} 
+                        size="small" 
+                        variant="outlined"
+                      />
+                    </Box>
+                  }
+                  secondary={suggestion.description}
+                />
               </ListItem>
             ))}
           </List>
         </Paper>
       )}
 
-      {results.review.issues.length === 0 && (
+      {safeResults.issues.length === 0 && (
         <Alert severity="success">
           <Typography variant="body1">
-            🎉 Excellent code quality! No significant issues found in {results.filename}.
+            🎉 Great job! No major code quality issues found in {safeResults.filename}!
           </Typography>
         </Alert>
       )}
